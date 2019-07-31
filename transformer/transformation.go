@@ -32,25 +32,22 @@ type rawTransformation struct {
 }
 
 func (transformations Transformations) Transform(name types.Path, contents types.FileContents) (
-	newContenets types.FileContents, fileIgnored bool, err error,
+	newContenets types.FileContents, err error,
 ) {
-	if transformations.globallyIgnored(name) {
-		return contents, true, nil
-	}
 	for _, transformer := range transformations.Transformers {
-		if ignored(name, transformer.GetFilePatterns()) {
+		if !matched(name, transformer.GetFilePatterns(), false) {
 			continue
 		}
 		contents = transformer.Transform(contents)
 	}
-	return contents, false, nil
+	return contents, nil
 }
 
-func (transformations Transformations) globallyIgnored(name types.Path) bool {
-	return ignored(name, transformations.Ignore)
+func (transformations Transformations) IsGloballyIgnored(name types.Path) bool {
+	return matched(name, transformations.Ignore, true)
 }
 
-func ignored(name types.Path, patterns []types.FilePattern) bool {
+func matched(name types.Path, patterns []types.FilePattern, includePrefix bool) bool {
 	for _, pattern := range patterns {
 		// Check glob match
 		matched, err := filepath.Match(string(pattern), string(name))
@@ -61,10 +58,12 @@ func ignored(name types.Path, patterns []types.FilePattern) bool {
 			return true
 		}
 
-		// And check string prefix match (when / is used at the end)
-		if strings.HasSuffix(string(pattern), "/") {
-			if strings.HasPrefix(string(name), string(pattern)) {
-				return true
+		if includePrefix {
+			// And check string prefix match (when / is used at the end)
+			if strings.HasSuffix(string(pattern), "/") {
+				if strings.HasPrefix(string(name), string(pattern)) {
+					return true
+				}
 			}
 		}
 	}

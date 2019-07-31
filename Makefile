@@ -24,16 +24,14 @@ ci-test: build
 cleanup-test-dir:
 	rm -rf $(TMP_DIR)
 	mkdir -p $(TMP_DIR)
-	cp -r * $(TMP_DIR)
 
 test-template: cleanup-test-dir
+	go run main.go transform --transformations=transformations.yml \
+		--source=. \
+		--destination=$(TMP_DIR)
+
 	cd $(TMP_DIR) &&\
-	HYGEN_OVERWRITE=1 ../../../$(HYGEN_BIN) template init $(TMP_PROJECT_NAME) \
-		--repo_path=gitlab.appsflyer.com/rantav \
-		--description="My awesome go project" \
-		--include_grpc=0 \
-		&&\
-	make
+		make
 
 setup: setup-git-hooks
 
@@ -41,7 +39,7 @@ setup-git-hooks:
 	git config core.hooksPath .githooks
 
 lint: $(GOLANGCI_LINT)
-	$(GOPATH)/bin/golangci-lint run --fast --enable-all
+	$(GOPATH)/bin/golangci-lint run --fast --enable-all -D gochecknoglobals -D gochecknoinits
 
 $(GOLANGCI_LINT):
 	GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)

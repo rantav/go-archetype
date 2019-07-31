@@ -1,6 +1,6 @@
-ignore: [".git/"]
+ignore: [".git/", "transformations.yml"]
 transformations:
   - name: project package
     pattern: github.com/rantav/go-archetype
     replacement: github.com/xxx/yyy
-    files: ["*.go", "go.mod"]
+    files: ["*.go", "go.mod", "**/*.go"]

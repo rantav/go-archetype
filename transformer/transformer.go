@@ -1,51 +1,40 @@
 package transformer
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
 
+	"github.com/rantav/go-archetype/reader"
 	"github.com/rantav/go-archetype/types"
+	"github.com/rantav/go-archetype/writer"
 )
 
 func Transform(source, destination types.Path, transformations Transformations) error {
 	return filepath.Walk(string(source), func(path string, info os.FileInfo, err error) error {
-		isDir, err := isDirectory(path)
 		if err != nil {
-			return errors.Wrap(err, "checking if dir")
+			return errors.Wrap(err, "error walking to file")
+		}
+		sourceFile := types.Path(path)
+		isDir, ignored, contents, err := reader.ReadFile(sourceFile, info, transformations.IsGloballyIgnored)
+		if err != nil {
+			return errors.Wrap(err, "error reading file")
 		}
 		if isDir {
 			return nil
 		}
-		sourceFile := types.Path(path)
-		contents, err := ioutil.ReadFile(path)
-		if err != nil {
-			return errors.Wrap(err, "reading file")
-		}
 
-		result, ignored, err := transformations.Transform(sourceFile, types.FileContents(contents))
-		if !ignored {
-			fmt.Println("File", path)
-			fmt.Println(result)
+		contents, err = transformations.Transform(sourceFile, contents)
+		if ignored {
+			color.Blue("Ignoring file %s", path)
+		} else {
+			err := writer.WriteFile(destination, sourceFile, contents, info.Mode())
+			if err != nil {
+				return err
+			}
 		}
 		return errors.Wrap(err, "transforming")
 	})
-}
-
-func isDirectory(path string) (bool, error) {
-	fi, err := os.Stat(path)
-	if err != nil {
-		return false, err
-	}
-	switch mode := fi.Mode(); {
-	case mode.IsDir():
-		return true, nil
-	case mode.IsRegular():
-		return false, nil
-	default:
-		return false, fmt.Errorf("unknown file mode (dir or file) at %s", err)
-	}
 }
