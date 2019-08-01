@@ -1,10 +1,11 @@
 package transformer
 
 import (
-	"fmt"
 	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
+
+	"github.com/rantav/go-archetype/inputs"
 )
 
 func Read(transformationsFile string) (*Transformations, error) {
@@ -12,29 +13,31 @@ func Read(transformationsFile string) (*Transformations, error) {
 	if err != nil {
 		return nil, err
 	}
-	var raw rawTransformations
-	err = yaml.Unmarshal(yamlFile, &raw)
+	var spec transformationsSpec
+	err = yaml.Unmarshal(yamlFile, &spec)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(raw)
-	return fromRaw(raw)
+	return FromSpec(spec)
 }
 
-func fromRaw(raw rawTransformations) (*Transformations, error) {
-	transformations := Transformations{
-		Ignore: raw.Ignore,
-	}
-	for _, t := range raw.Transformations {
-		transformer, err := newTransformer(t)
-		if err != nil {
-			return nil, err
-		}
-		transformations.Transformers = append(transformations.Transformers, transformer)
-	}
-	return &transformations, nil
+func FromSpec(spec transformationsSpec) (*Transformations, error) {
+	return &Transformations{
+		ignore:       spec.Ignore,
+		transformers: transformersFromSpec(spec.Transformations),
+		prompters:    inputs.FromSpec(spec.Inputs),
+		userInputs:   make(map[string]inputs.PromptResponse),
+	}, nil
 }
 
-func newTransformer(raw rawTransformation) (Transformer, error) {
-	return newTextReplacer(raw), nil
+func transformersFromSpec(transformationSpecs []transformationSpec) []Transformer {
+	var transformers []Transformer
+	for _, t := range transformationSpecs {
+		transformers = append(transformers, newTransformer(t))
+	}
+	return transformers
+}
+
+func newTransformer(spec transformationSpec) Transformer {
+	return newTextReplacer(spec) // TODO: Add types here
 }

@@ -39,7 +39,7 @@ setup-git-hooks:
 	git config core.hooksPath .githooks
 
 lint: $(GOLANGCI_LINT)
-	$(GOPATH)/bin/golangci-lint run --fast --enable-all -D gochecknoglobals -D gochecknoinits
+	$(GOPATH)/bin/golangci-lint run --fast --enable-all -D gochecknoglobals -D gochecknoinits -D prealloc
 
 $(GOLANGCI_LINT):
 	GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)

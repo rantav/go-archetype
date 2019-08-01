@@ -5,36 +5,35 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/rantav/go-archetype/inputs"
 	"github.com/rantav/go-archetype/types"
 )
 
 type Transformer interface {
 	GetName() string
 	GetFilePatterns() []types.FilePattern
+	Template(vars map[string]string) error
 	Transform(types.FileContents) types.FileContents
 }
 
 type Transformations struct {
-	Ignore       []types.FilePattern
-	Transformers []Transformer
+	// Global ignore patterns
+	ignore []types.FilePattern
+
+	// The list of transformers
+	transformers []Transformer
+
+	// User prompters
+	prompters []inputs.Prompter
+
+	// User's responses to prompters
+	userInputs map[string]inputs.PromptResponse
 }
 
-type rawTransformations struct {
-	Ignore          []types.FilePattern `yaml:"ignore"`
-	Transformations []rawTransformation `yaml:"transformations"`
-}
-
-type rawTransformation struct {
-	Name        string              `yaml:"name"`
-	Pattern     string              `yaml:"pattern"`
-	Replacement string              `yaml:"replacement"`
-	Files       []types.FilePattern `yaml:"files"`
-}
-
-func (transformations Transformations) Transform(name types.Path, contents types.FileContents) (
+func (t Transformations) Transform(name types.Path, contents types.FileContents) (
 	newContenets types.FileContents, err error,
 ) {
-	for _, transformer := range transformations.Transformers {
+	for _, transformer := range t.transformers {
 		if !matched(name, transformer.GetFilePatterns(), false) {
 			continue
 		}
@@ -43,8 +42,30 @@ func (transformations Transformations) Transform(name types.Path, contents types
 	return contents, nil
 }
 
-func (transformations Transformations) IsGloballyIgnored(name types.Path) bool {
-	return matched(name, transformations.Ignore, true)
+func (t Transformations) IsGloballyIgnored(name types.Path) bool {
+	return matched(name, t.ignore, true)
+}
+
+func (t Transformations) GetInputPrompters() []inputs.Prompter {
+	return t.prompters
+}
+
+func (t *Transformations) SetResponse(response inputs.PromptResponse) {
+	t.userInputs[response.ID] = response
+}
+
+func (t *Transformations) Template() error {
+	inputsAsMap := make(map[string]string)
+	for _, input := range t.userInputs {
+		inputsAsMap[input.ID] = input.Answer
+	}
+	for _, tr := range t.transformers {
+		err := tr.Template(inputsAsMap)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func matched(name types.Path, patterns []types.FilePattern, includePrefix bool) bool {
