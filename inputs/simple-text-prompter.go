@@ -6,14 +6,17 @@ import (
 )
 
 type simpleTextPrompter struct {
-	InputSpec
+	PromptResponse
 }
 
 func newSimpleTextPrompter(spec InputSpec) Prompter {
-	return simpleTextPrompter{InputSpec: spec}
+	return &simpleTextPrompter{PromptResponse: PromptResponse{InputSpec: spec}}
 }
 
-func (p simpleTextPrompter) Prompt() (PromptResponse, error) {
+func (p *simpleTextPrompter) Prompt() (PromptResponse, error) {
+	if p.Answered {
+		return p.PromptResponse, nil
+	}
 	var answer string
 	prompt := &survey.Input{
 		Message: p.Text,
@@ -22,8 +25,15 @@ func (p simpleTextPrompter) Prompt() (PromptResponse, error) {
 	if err != nil {
 		return PromptResponse{}, errors.Wrap(err, "prompt error")
 	}
-	return PromptResponse{
-		InputSpec: p.InputSpec,
-		Answer:    answer,
-	}, nil
+	return p.SetStringResponse(answer), nil
+}
+
+func (p *simpleTextPrompter) GetID() string {
+	return p.ID
+}
+
+func (p *simpleTextPrompter) SetStringResponse(answer string) PromptResponse {
+	p.Answer = answer
+	p.Answered = true
+	return p.PromptResponse
 }

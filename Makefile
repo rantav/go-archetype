@@ -28,7 +28,9 @@ cleanup-test-dir:
 test-template: cleanup-test-dir
 	go run main.go transform --transformations=transformations.yml \
 		--source=. \
-		--destination=$(TMP_DIR)
+		--destination=$(TMP_DIR) \
+		-- \
+		--ProjectName my-go-project
 
 	cd $(TMP_DIR) &&\
 		make

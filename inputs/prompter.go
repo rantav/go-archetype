@@ -2,13 +2,19 @@ package inputs
 
 type PromptResponse struct {
 	InputSpec
-	Answer string
+	Answer   string
+	Answered bool
 }
 
+// Prompter is a user-input prompter capabale of storing user inputs
+// as well as prompting for interactive user input
 type Prompter interface {
+	GetID() string
 	Prompt() (PromptResponse, error)
+	SetStringResponse(string) PromptResponse
 }
 
+// Create a new prompt based on spec.Type
 func NewPrompt(spec InputSpec) Prompter {
 	switch spec.Type {
 	case "text":
