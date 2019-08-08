@@ -67,8 +67,8 @@ func (t *includeTransformer) Transform(input types.FileContents) types.FileConte
 	if scanner.Err() != nil {
 		log.Errorf("Error while scanning file: %+v.\n\n Contents: %s", scanner.Err(), input)
 	}
-	// Remove the last \n
-	if !anyFound {
+
+	if !anyFound && !t.truthy {
 		return ""
 	}
 	return types.FileContents(output.String())

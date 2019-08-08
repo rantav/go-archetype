@@ -67,6 +67,20 @@ END __1__
 3
 `,
 		},
+		{
+			"truthy, non-empty file, but no marker",
+			true,
+			"",
+			"1",
+			"1\n",
+		},
+		{
+			"falsy, non-empty file, but no marker",
+			false,
+			"",
+			"1",
+			"",
+		},
 	}
 	for _, test := range tests {
 		tester(test.name, test.truthy, test.marker,
