@@ -5,15 +5,15 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/fatih/color"
 	"github.com/pkg/errors"
 
+	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/types"
 )
 
 func WriteFile(destinationBase, file types.Path, contents types.FileContents, mode os.FileMode) error {
 	destinationPath := filepath.Join(string(destinationBase), string(file))
-	color.Green("Writing file %s", destinationPath)
+	log.Infof("Writing file %s", destinationPath)
 	dir := filepath.Dir(destinationPath)
 	err := os.MkdirAll(dir, os.ModeDir|os.ModePerm)
 	if err != nil {

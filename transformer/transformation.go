@@ -1,11 +1,11 @@
 package transformer
 
 import (
-	"log"
 	"path/filepath"
 	"strings"
 
 	"github.com/rantav/go-archetype/inputs"
+	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/types"
 )
 
@@ -30,6 +30,7 @@ func (t Transformations) Transform(name types.Path, contents types.FileContents)
 		if !matched(name, transformer.GetFilePatterns(), false) {
 			continue
 		}
+		log.Debugf("Applying transformer [%s] to file [%s]", transformer.GetName(), name)
 		contents = transformer.Transform(contents)
 	}
 	return contents, nil
@@ -66,7 +67,7 @@ func matched(name types.Path, patterns []types.FilePattern, includePrefix bool) 
 		// Check glob match
 		matched, err := filepath.Match(string(pattern), string(name))
 		if err != nil {
-			log.Printf("Error matching pattern %s to file %s. %+v \n", pattern, name, err)
+			log.Errorf("Error matching pattern %s to file %s. %+v \n", pattern, name, err)
 		}
 		if matched {
 			return true

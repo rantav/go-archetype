@@ -26,7 +26,7 @@ cleanup-test-dir:
 	mkdir -p $(TMP_DIR)
 
 test-template: cleanup-test-dir
-	go run main.go transform --transformations=transformations.yml \
+	LOG_LEVEL=debug go run main.go transform --transformations=transformations.yml \
 		--source=. \
 		--destination=$(TMP_DIR) \
 		-- \

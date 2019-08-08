@@ -4,9 +4,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/fatih/color"
 	"github.com/pkg/errors"
 
+	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/reader"
 	"github.com/rantav/go-archetype/types"
 	"github.com/rantav/go-archetype/writer"
@@ -35,7 +35,7 @@ func Transform(source, destination types.Path, transformations Transformations) 
 
 		contents, err = transformations.Transform(sourceFile, contents)
 		if ignored {
-			color.Blue("Ignoring file %s", path)
+			log.Debugf("Ignoring file %s", path)
 		} else {
 			err := writer.WriteFile(destination, sourceFile, contents, info.Mode())
 			if err != nil {
