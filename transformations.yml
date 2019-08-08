@@ -3,15 +3,27 @@ inputs:
   - id: ProjectName # Must be a unique ID. Can be used also as CLI arg
     text: What is the project name?
     type: text
-  - id: BooleanType
-    text: Are you true to yourself?
+  - id: IncludeReadme
+    text: Would you like to include the readme file?
     type: yesno
 transformations:
+  - name: include the readme file
+    type: include
+    region_marker: # When there's no marker, the entire file(s) is included
+    condition: IncludeReadme
+    files: ["README.md"]
+  - name: include a reference to the readme file
+    type: include
+    region_marker: __INCLUDE_README__
+    condition: IncludeReadme
+    files: ["main.go"]
   - name: project package
+    type: replace
     pattern: github.com/rantav/go-archetype
     replacement: github.com/xxx/yyy # A simple replacement that does not require user input. Useful? Not really...
     files: ["*.go", "go.mod", "**/*.go"]
   - name: project name
+    type: replace
     pattern: go-archetype
     replacement: "{{ .ProjectName }}" # Reference to an input ID; go templates syntax
     files: ["*.go", "**/*.go"]

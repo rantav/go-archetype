@@ -37,7 +37,3 @@ func transformersFromSpec(transformationSpecs []transformationSpec) []Transforme
 	}
 	return transformers
 }
-
-func newTransformer(spec transformationSpec) Transformer {
-	return newTextReplacer(spec) // TODO: Add types here
-}

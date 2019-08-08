@@ -35,7 +35,6 @@ func (p *simpleTextPrompter) GetID() string {
 func (p *simpleTextPrompter) SetStringResponse(answer string) PromptResponse {
 	p.Answer = answer
 	p.Answered = true
-	p.Truthy = true
 	return p.PromptResponse
 }
 

@@ -2,7 +2,7 @@
 
 go-archetype is a tool for creating project archetypes.
 
-If you or your company create new projects and you want all these projects to preserve a similar structure or simply create a good starting point for other develoeprs, use go-archetype to define project archtypes (tempaltes).
+If you or your company create new projects and you want all these projects to preserve a similar structure or simply create a good starting point for other develoeprs, use go-archetype to define project archtypes (templates).
 
 ## Concept
 
@@ -13,7 +13,7 @@ Two roles are involved:
 
 ### Archetype creator
 
-As the archetype creator you create a tempalte (aka blueprint) project. This project is fully functional, valid code written in Golang, JavaScript, Java, Python etc. (go-archetype is agnostic)
+As the archetype creator you create a template (aka blueprint) project. This project is fully functional, valid code written in Golang, JavaScript, Java, Python etc. (go-archetype is agnostic)
 And then you define a set of transformaitons. E.g. ask the user for the project name and replace here, here and here.
 
 ### Developer using the archetype

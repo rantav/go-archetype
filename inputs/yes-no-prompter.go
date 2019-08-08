@@ -9,6 +9,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+const (
+	trueS  = "true"
+	falseS = "false"
+)
+
 type yesNoPrompter struct {
 	PromptResponse
 }
@@ -33,9 +38,9 @@ func (p *yesNoPrompter) Prompt() (PromptResponse, error) {
 		return PromptResponse{}, errors.Wrap(err, "prompt error")
 	}
 	if yes {
-		answer = "true"
+		answer = trueS
 	} else {
-		answer = "false"
+		answer = falseS
 	}
 	return p.SetStringResponse(answer), nil
 }
@@ -50,8 +55,11 @@ func (p *yesNoPrompter) SetStringResponse(answer string) PromptResponse {
 	if err != nil {
 		panic(fmt.Sprintf("Unknown input to yes/no boolean input (use true/false): %+v", err))
 	}
-	p.Truthy = b
-	p.Answer = answer
+	if b {
+		p.Answer = trueS
+	} else {
+		p.Answer = "" // This evaluates to false by go tempalates
+	}
 	p.Answered = true
 	return p.PromptResponse
 }
@@ -61,9 +69,9 @@ func (p *yesNoPrompter) SetStringResponse(answer string) PromptResponse {
 func (p *yesNoPrompter) beNiceAndTryToConvert(str string) string {
 	switch strings.ToLower(str) {
 	case "yes", "ok", "sure", "why not":
-		return "true"
-	case "no", "hell no", "as if":
-		return "false"
+		return trueS
+	case "", "no", "hell no", "as if":
+		return falseS
 	default:
 		return str
 	}

@@ -6,8 +6,6 @@ type PromptResponse struct {
 	Answer string
 	// Has this been answered already?
 	Answered bool
-	// Does this response represent a truthy value? Useful for yes/no questions
-	Truthy bool
 }
 
 // Prompter is a user-input prompter capabale of storing user inputs
