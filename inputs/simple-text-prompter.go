@@ -9,7 +9,7 @@ type simpleTextPrompter struct {
 	PromptResponse
 }
 
-func newSimpleTextPrompter(spec InputSpec) Prompter {
+func newSimpleTextPrompter(spec InputSpec) *simpleTextPrompter {
 	return &simpleTextPrompter{PromptResponse: PromptResponse{InputSpec: spec}}
 }
 
@@ -35,5 +35,8 @@ func (p *simpleTextPrompter) GetID() string {
 func (p *simpleTextPrompter) SetStringResponse(answer string) PromptResponse {
 	p.Answer = answer
 	p.Answered = true
+	p.Truthy = true
 	return p.PromptResponse
 }
+
+var _ Prompter = &simpleTextPrompter{}

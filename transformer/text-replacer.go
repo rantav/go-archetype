@@ -39,3 +39,5 @@ func newTextReplacer(spec transformationSpec) *textReplacer {
 		files:       spec.Files,
 	}
 }
+
+var _ Transformer = &textReplacer{}

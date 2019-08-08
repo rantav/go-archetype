@@ -3,10 +3,13 @@ inputs:
   - id: ProjectName # Must be a unique ID. Can be used also as CLI arg
     text: What is the project name?
     type: text
+  - id: BooleanType
+    text: Are you true to yourself?
+    type: yesno
 transformations:
   - name: project package
     pattern: github.com/rantav/go-archetype
-    replacement: github.com/xxx/yyy
+    replacement: github.com/xxx/yyy # A simple replacement that does not require user input. Useful? Not really...
     files: ["*.go", "go.mod", "**/*.go"]
   - name: project name
     pattern: go-archetype

@@ -2,8 +2,12 @@ package inputs
 
 type PromptResponse struct {
 	InputSpec
-	Answer   string
+	// Answer string
+	Answer string
+	// Has this been answered already?
 	Answered bool
+	// Does this response represent a truthy value? Useful for yes/no questions
+	Truthy bool
 }
 
 // Prompter is a user-input prompter capabale of storing user inputs
@@ -19,6 +23,8 @@ func NewPrompt(spec InputSpec) Prompter {
 	switch spec.Type {
 	case "text":
 		return newSimpleTextPrompter(spec)
+	case "yesno":
+		return newYesNoPrompter(spec)
 	default:
 		panic("Unknown user input type")
 	}

@@ -9,13 +9,6 @@ import (
 	"github.com/rantav/go-archetype/types"
 )
 
-type Transformer interface {
-	GetName() string
-	GetFilePatterns() []types.FilePattern
-	Template(vars map[string]string) error
-	Transform(types.FileContents) types.FileContents
-}
-
 type Transformations struct {
 	// Global ignore patterns
 	ignore []types.FilePattern

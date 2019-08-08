@@ -12,6 +12,13 @@ import (
 	"github.com/rantav/go-archetype/writer"
 )
 
+type Transformer interface {
+	GetName() string
+	GetFilePatterns() []types.FilePattern
+	Template(vars map[string]string) error
+	Transform(types.FileContents) types.FileContents
+}
+
 func Transform(source, destination types.Path, transformations Transformations) error {
 	return filepath.Walk(string(source), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
