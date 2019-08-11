@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"log"
+
 	"github.com/spf13/cobra"
 
 	"github.com/rantav/go-archetype/generator"
@@ -20,7 +22,7 @@ var transformCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := generator.Generate(*transformationsFile, *source, *destination, args)
 		if err != nil {
-			panic(err) // For now. Later do something nicer.
+			log.Fatalf("error generating: %+v", err)
 		}
 	},
 }
