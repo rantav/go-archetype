@@ -14,6 +14,7 @@ import (
 func WriteFile(destinationBase string, file types.File, mode os.FileMode) error {
 	if file.Discarded {
 		log.Debugf("File is discarded, not writing: %s", file.Path)
+		return nil
 	}
 	destinationPath := filepath.Join(destinationBase, file.Path)
 	log.Infof("Writing file %s", destinationPath)
