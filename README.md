@@ -39,3 +39,7 @@ Here are the steps:
 ## Requesting for user input
 
     TODO
+
+## Operations and debugging
+
+The view detailed logs, run with `LOG_LEVEL=debug`

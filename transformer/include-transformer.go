@@ -73,8 +73,14 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 		log.Errorf("Error while scanning file: %+v.\n\n Contents: %v", scanner.Err(), input)
 	}
 
+	newContents := output.String()
+	// Check if a the last newline should be preserved or discarded.
+	if len(newContents) > 0 && !t.hasEmptyLineAtTheEnd(input.Contents) {
+		newContents = newContents[:len(newContents)-1]
+	}
+
 	return types.File{
-		Contents: output.String(),
+		Contents: newContents,
 		Path:     input.Path,
 	}
 }
@@ -83,6 +89,11 @@ func (t *includeTransformer) Template(vars map[string]string) error {
 	var err error
 	t.truthy, err = evaluateCondition(t.condition, vars)
 	return err
+}
+
+func (t *includeTransformer) hasEmptyLineAtTheEnd(s string) bool {
+	l := len(s)
+	return l >= 1 && s[l-1] == '\n'
 }
 
 var _ Transformer = &includeTransformer{}

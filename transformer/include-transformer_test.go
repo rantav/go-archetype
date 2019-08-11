@@ -52,12 +52,10 @@ func TestTransform(t *testing.T) {
 BEGIN __1__
 2
 END __1__
-3
-`,
+3`,
 			`1
 2
-3
-`,
+3`,
 			false,
 		},
 		{
@@ -80,7 +78,7 @@ END __1__
 			true,
 			"",
 			"1",
-			"1\n",
+			"1",
 			false,
 		},
 		{
@@ -90,6 +88,19 @@ END __1__
 			"1",
 			"",
 			true,
+		},
+		{
+			"falsy, with a marker",
+			false,
+			"__1__",
+			`1
+BEGIN __1__
+2
+END __1__
+`,
+			`1
+`,
+			false,
 		},
 	}
 	for _, test := range tests {
