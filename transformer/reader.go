@@ -6,6 +6,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/rantav/go-archetype/inputs"
+	"github.com/rantav/go-archetype/types"
 )
 
 func Read(transformationsFile string) (*Transformations, error) {
@@ -23,7 +24,7 @@ func Read(transformationsFile string) (*Transformations, error) {
 
 func FromSpec(spec transformationsSpec) (*Transformations, error) {
 	return &Transformations{
-		ignore:       spec.Ignore,
+		ignore:       types.NewFilePatterns(spec.Ignore),
 		transformers: transformersFromSpec(spec.Transformations),
 		prompters:    inputs.FromSpec(spec.Inputs),
 		userInputs:   make(map[string]inputs.PromptResponse),

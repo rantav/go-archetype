@@ -1,7 +1,6 @@
 package transformer
 
 import (
-	"path/filepath"
 	"strings"
 
 	"github.com/rantav/go-archetype/inputs"
@@ -69,9 +68,9 @@ func (t *Transformations) Template() error {
 func matched(path string, patterns []types.FilePattern, includePrefix bool) bool {
 	for _, pattern := range patterns {
 		// Check glob match
-		matched, err := filepath.Match(string(pattern), path)
+		matched, err := pattern.Match(path)
 		if err != nil {
-			log.Errorf("Error matching pattern %s to file %s. %+v \n", pattern, path, err)
+			log.Errorf("Error matching pattern %s to file %s. %+v \n", pattern.Pattern, path, err)
 		}
 		if matched {
 			return true
@@ -79,8 +78,8 @@ func matched(path string, patterns []types.FilePattern, includePrefix bool) bool
 
 		if includePrefix {
 			// And check string prefix match (when / is used at the end)
-			if strings.HasSuffix(string(pattern), "/") {
-				if strings.HasPrefix(path, string(pattern)) {
+			if strings.HasSuffix(pattern.Pattern, "/") {
+				if strings.HasPrefix(path, pattern.Pattern) {
 					return true
 				}
 			}

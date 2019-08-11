@@ -22,7 +22,7 @@ var transformCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := generator.Generate(*transformationsFile, *source, *destination, args)
 		if err != nil {
-			log.Fatalf("error generating: %+v", err)
+			log.Fatalf("error generating: %s", err)
 		}
 	},
 }

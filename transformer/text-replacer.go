@@ -39,7 +39,7 @@ func newTextReplacer(spec transformationSpec) *textReplacer {
 		name:        spec.Name,
 		pattern:     spec.Pattern,
 		replacement: spec.Replacement,
-		files:       spec.Files,
+		files:       types.NewFilePatterns(spec.Files),
 	}
 }
 

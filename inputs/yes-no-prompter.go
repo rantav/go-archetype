@@ -1,7 +1,7 @@
 package inputs
 
 import (
-	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -53,7 +53,7 @@ func (p *yesNoPrompter) SetStringResponse(answer string) PromptResponse {
 	answer = p.beNiceAndTryToConvert(answer)
 	b, err := strconv.ParseBool(answer)
 	if err != nil {
-		panic(fmt.Sprintf("Unknown input to yes/no boolean input (use true/false): %+v", err))
+		log.Fatalf("Unknown input to yes/no boolean input (use true/false): %s", err)
 	}
 	if b {
 		p.Answer = trueS

@@ -25,7 +25,7 @@ func newIncludeTransformer(spec transformationSpec) *includeTransformer {
 		name:         spec.Name,
 		condition:    spec.Condition,
 		regionMarker: spec.RegionMarker,
-		files:        spec.Files,
+		files:        types.NewFilePatterns(spec.Files),
 	}
 }
 

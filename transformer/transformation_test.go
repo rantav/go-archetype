@@ -26,7 +26,7 @@ func TestTransformationsTransform(t *testing.T) {
 			transformationSpec{
 				Pattern:     "x",
 				Replacement: "y",
-				Files:       []types.FilePattern{"*.go"},
+				Files:       []string{"*.go"},
 			})},
 	}
 	file, err = ts.Transform(types.File{
@@ -42,7 +42,7 @@ func TestTransformationsTransform(t *testing.T) {
 			transformationSpec{
 				Pattern:     "x",
 				Replacement: "y",
-				Files:       []types.FilePattern{"hello.go"},
+				Files:       []string{"hello.go"},
 			})},
 	}
 	file, err = ts.Transform(types.File{
@@ -69,6 +69,12 @@ func TestTransformationsTemplate(t *testing.T) {
 
 func TestTransformationsMatched(t *testing.T) {
 	assert := assert.New(t)
-	assert.True(matched("hello.go", []types.FilePattern{"hello.go"}, false))
-	assert.True(matched("all/hello.go", []types.FilePattern{"all/"}, true))
+	assert.True(matched("hello.go", []types.FilePattern{{Pattern: "hello.go"}}, false))
+	assert.True(matched("all/hello.go", []types.FilePattern{{Pattern: "all/"}}, true))
+
+	// Test some globs
+	assert.True(matched("hello.go", []types.FilePattern{{Pattern: "*.go"}}, false))
+	assert.True(matched("x/hello.go", []types.FilePattern{{Pattern: "*/*.go"}}, false))
+	assert.False(matched("x/hello.go", []types.FilePattern{{Pattern: "*.go"}}, false))
+	assert.True(matched("x/y/hello.go", []types.FilePattern{{Pattern: "**/*.go"}}, false))
 }
