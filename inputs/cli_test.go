@@ -54,13 +54,3 @@ func TestParseCLIArgsInputs(t *testing.T) {
 	assert.Equal("y", p.Answer)
 
 }
-
-type mockInputsCollector struct {
-	prompters []Prompter
-}
-
-func (c *mockInputsCollector) GetInputPrompters() []Prompter {
-	return c.prompters
-}
-
-func (c *mockInputsCollector) SetResponse(PromptResponse) {}

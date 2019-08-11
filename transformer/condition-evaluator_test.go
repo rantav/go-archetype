@@ -66,3 +66,9 @@ func TestEvaluateCondition(t *testing.T) {
 		tester(test.name, test.expected, test.shouldErr, test.condition, test.vars)
 	}
 }
+
+func TestEvaluateConditionSad(t *testing.T) {
+	assert := assert.New(t)
+	_, err := evaluateCondition("!.x", nil)
+	assert.Error(err)
+}

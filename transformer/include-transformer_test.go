@@ -96,3 +96,21 @@ END __1__
 		tester(test.name, test.truthy, test.marker, test.input, test.output, test.discarded)
 	}
 }
+
+func TestIncludeTransformerTemplate(t *testing.T) {
+	assert := assert.New(t)
+	transformer := includeTransformer{}
+	vars := make(map[string]string)
+	err := transformer.Template(vars)
+	assert.NoError(err)
+}
+
+func TestIncludeTransformerBasics(t *testing.T) {
+	assert := assert.New(t)
+
+	r := newIncludeTransformer(transformationSpec{
+		Name: "1",
+	})
+	assert.Equal("1", r.GetName())
+	assert.Empty(r.GetFilePatterns())
+}
