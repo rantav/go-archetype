@@ -6,6 +6,9 @@ inputs:
   - id: IncludeReadme
     text: Would you like to include the readme file?
     type: yesno
+  - id: ProjectDescription
+    text: Please provide a long project description
+    type: text
 transformations:
   - name: include the readme file
     type: include
@@ -17,6 +20,11 @@ transformations:
     region_marker: __INCLUDE_README__
     condition: IncludeReadme
     files: ["main.go"]
+  - name: project long description
+    type: replace
+    pattern: Use go-archetype to transform project archetypes into existing live projects
+    replacement: "{{ wrap 80 .ProjectDescription }}" # Wrap input by 80 columns
+    files: ["cmd/root.go"]
   - name: project package
     type: replace
     pattern: github.com/rantav/go-archetype

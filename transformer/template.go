@@ -2,13 +2,15 @@ package transformer
 
 import (
 	"bytes"
+	ht "html/template"
 	tt "text/template"
 
+	"github.com/Masterminds/sprig"
 	"github.com/pkg/errors"
 )
 
 func template(text string, vars map[string]string) (string, error) {
-	tmpl, err := tt.New("t").Parse(text)
+	tmpl, err := tt.New("t").Funcs(textmap(sprig.FuncMap())).Parse(text)
 	if err != nil {
 		return "", errors.Wrap(err, "error creating the text template")
 	}
@@ -18,4 +20,12 @@ func template(text string, vars map[string]string) (string, error) {
 		return "", errors.Wrap(err, "error templating")
 	}
 	return buf.String(), nil
+}
+
+func textmap(h ht.FuncMap) tt.FuncMap {
+	m := make(tt.FuncMap)
+	for k, v := range h {
+		m[k] = v
+	}
+	return m
 }

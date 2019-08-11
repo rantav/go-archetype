@@ -14,6 +14,6 @@ func TestRead(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(transformations)
 
-	assert.Equal(2, len(transformations.GetInputPrompters()))
-	assert.Equal(4, len(transformations.transformers))
+	assert.Equal(3, len(transformations.GetInputPrompters()))
+	assert.Equal(5, len(transformations.transformers))
 }
