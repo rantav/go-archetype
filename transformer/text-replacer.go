@@ -21,8 +21,11 @@ func (t *textReplacer) GetFilePatterns() []types.FilePattern {
 	return t.files
 }
 
-func (t *textReplacer) Transform(input types.FileContents) types.FileContents {
-	return types.FileContents(strings.ReplaceAll(string(input), t.pattern, t.replacement))
+func (t *textReplacer) Transform(input types.File) types.File {
+	return types.File{
+		Contents: strings.ReplaceAll(input.Contents, t.pattern, t.replacement),
+		Path:     input.Path,
+	}
 }
 
 func (t *textReplacer) Template(vars map[string]string) error {

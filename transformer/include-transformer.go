@@ -37,15 +37,21 @@ func (t *includeTransformer) GetFilePatterns() []types.FilePattern {
 	return t.files
 }
 
-func (t *includeTransformer) Transform(input types.FileContents) types.FileContents {
+func (t *includeTransformer) Transform(input types.File) types.File {
+	if len(t.regionMarker) == 0 && !t.truthy {
+		// Discard the entire file
+		return types.File{
+			Discarded: true,
+			Path:      input.Path,
+		}
+	}
 	// Locate begin and end lines of the markers
 	beginMarker := fmt.Sprintf("BEGIN %s", t.regionMarker)
 	endMarker := fmt.Sprintf("END %s", t.regionMarker)
-	scanner := bufio.NewScanner(strings.NewReader(string(input)))
+	scanner := bufio.NewScanner(strings.NewReader(input.Contents))
 	var (
 		output      strings.Builder
 		insideBlock = false
-		anyFound    = false
 	)
 	for scanner.Scan() {
 		includeLine := t.truthy || !insideBlock
@@ -53,7 +59,6 @@ func (t *includeTransformer) Transform(input types.FileContents) types.FileConte
 		if strings.Contains(text, beginMarker) {
 			insideBlock = true
 			includeLine = false
-			anyFound = true
 		}
 		if strings.Contains(text, endMarker) {
 			insideBlock = false
@@ -65,13 +70,13 @@ func (t *includeTransformer) Transform(input types.FileContents) types.FileConte
 		}
 	}
 	if scanner.Err() != nil {
-		log.Errorf("Error while scanning file: %+v.\n\n Contents: %s", scanner.Err(), input)
+		log.Errorf("Error while scanning file: %+v.\n\n Contents: %v", scanner.Err(), input)
 	}
 
-	if !anyFound && !t.truthy {
-		return ""
+	return types.File{
+		Contents: output.String(),
+		Path:     input.Path,
 	}
-	return types.FileContents(output.String())
 }
 
 func (t *includeTransformer) Template(vars map[string]string) error {

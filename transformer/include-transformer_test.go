@@ -9,20 +9,24 @@ import (
 
 func TestTransform(t *testing.T) {
 	assert := assert.New(t)
-	tester := func(name string, truthy bool, marker string, input, expectedOutput types.FileContents) {
+	tester := func(name string, truthy bool, marker string, input, expectedOutput string, expectedDiscarded bool) {
 		transformer := includeTransformer{
 			truthy:       truthy,
 			regionMarker: marker,
 		}
-		output := transformer.Transform(input)
-		assert.Equalf(string(expectedOutput), string(output), "Test failed: %s", name)
+		output := transformer.Transform(types.File{Contents: input})
+		assert.Equalf(expectedOutput, output.Contents, "Test failed, output not expected: %s", name)
+		assert.Equalf(expectedDiscarded, output.Discarded, "Test failed, discarded not expected: %s", name)
 	}
+
+	// nolint:maligned
 	tests := []struct {
-		name   string
-		truthy bool
-		marker string
-		input  string
-		output string
+		name      string
+		truthy    bool
+		marker    string
+		input     string
+		output    string
+		discarded bool
 	}{
 		{
 			"truthy, all empty",
@@ -30,6 +34,7 @@ func TestTransform(t *testing.T) {
 			"",
 			"",
 			"",
+			false,
 		},
 		{
 			"falsy, all empty",
@@ -37,6 +42,7 @@ func TestTransform(t *testing.T) {
 			"",
 			"",
 			"",
+			true,
 		},
 		{
 			"truthy, with a marker",
@@ -52,6 +58,7 @@ END __1__
 2
 3
 `,
+			false,
 		},
 		{
 			"falsy, with a marker",
@@ -66,6 +73,7 @@ END __1__
 			`1
 3
 `,
+			false,
 		},
 		{
 			"truthy, non-empty file, but no marker",
@@ -73,6 +81,7 @@ END __1__
 			"",
 			"1",
 			"1\n",
+			false,
 		},
 		{
 			"falsy, non-empty file, but no marker",
@@ -80,10 +89,10 @@ END __1__
 			"",
 			"1",
 			"",
+			true,
 		},
 	}
 	for _, test := range tests {
-		tester(test.name, test.truthy, test.marker,
-			types.FileContents(test.input), types.FileContents(test.output))
+		tester(test.name, test.truthy, test.marker, test.input, test.output, test.discarded)
 	}
 }

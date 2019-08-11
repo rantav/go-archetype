@@ -23,21 +23,25 @@ type Transformations struct {
 	userInputs map[string]inputs.PromptResponse
 }
 
-func (t Transformations) Transform(name types.Path, contents types.FileContents) (
-	newContenets types.FileContents, err error,
+func (t Transformations) Transform(file types.File) (
+	newFile types.File, err error,
 ) {
+	// See if file already needs to be discarded
+	if file.Discarded {
+		return file, nil
+	}
 	for _, transformer := range t.transformers {
-		if !matched(name, transformer.GetFilePatterns(), false) {
+		if !matched(file.Path, transformer.GetFilePatterns(), false) {
 			continue
 		}
-		log.Debugf("Applying transformer [%s] to file [%s]", transformer.GetName(), name)
-		contents = transformer.Transform(contents)
+		log.Debugf("Applying transformer [%s] to file [%s]", transformer.GetName(), file.Path)
+		file = transformer.Transform(file)
 	}
-	return contents, nil
+	return file, nil
 }
 
-func (t Transformations) IsGloballyIgnored(name types.Path) bool {
-	return matched(name, t.ignore, true)
+func (t Transformations) IsGloballyIgnored(path string) bool {
+	return matched(path, t.ignore, true)
 }
 
 func (t Transformations) GetInputPrompters() []inputs.Prompter {
@@ -62,12 +66,12 @@ func (t *Transformations) Template() error {
 	return nil
 }
 
-func matched(name types.Path, patterns []types.FilePattern, includePrefix bool) bool {
+func matched(path string, patterns []types.FilePattern, includePrefix bool) bool {
 	for _, pattern := range patterns {
 		// Check glob match
-		matched, err := filepath.Match(string(pattern), string(name))
+		matched, err := filepath.Match(string(pattern), path)
 		if err != nil {
-			log.Errorf("Error matching pattern %s to file %s. %+v \n", pattern, name, err)
+			log.Errorf("Error matching pattern %s to file %s. %+v \n", pattern, path, err)
 		}
 		if matched {
 			return true
@@ -76,7 +80,7 @@ func matched(name types.Path, patterns []types.FilePattern, includePrefix bool) 
 		if includePrefix {
 			// And check string prefix match (when / is used at the end)
 			if strings.HasSuffix(string(pattern), "/") {
-				if strings.HasPrefix(string(name), string(pattern)) {
+				if strings.HasPrefix(path, string(pattern)) {
 					return true
 				}
 			}

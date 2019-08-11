@@ -5,7 +5,6 @@ import (
 
 	"github.com/rantav/go-archetype/inputs"
 	"github.com/rantav/go-archetype/transformer"
-	"github.com/rantav/go-archetype/types"
 )
 
 // Generate is the main entry point for code generation/transformations.
@@ -31,9 +30,7 @@ func Generate(transformationsFile, source, destination string, inputArgs []strin
 	}
 
 	spew.Dump(transformations)
-	sourcePath := types.Path(source)
-	destinationPath := types.Path(destination)
-	err = transformer.Transform(sourcePath, destinationPath, *transformations)
+	err = transformer.Transform(source, destination, *transformations)
 	if err != nil {
 		return err
 	}

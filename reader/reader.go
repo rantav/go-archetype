@@ -10,8 +10,8 @@ import (
 	"github.com/rantav/go-archetype/types"
 )
 
-func ReadFile(path types.Path, info os.FileInfo, isIgnored func(types.Path) bool) (
-	isDir, ignored bool, contents types.FileContents, err error,
+func ReadFile(path string, info os.FileInfo, isIgnored func(string) bool) (
+	isDir, ignored bool, file types.File, err error,
 ) {
 	isDir, err = isDirectory(info)
 	if err != nil {
@@ -25,12 +25,15 @@ func ReadFile(path types.Path, info os.FileInfo, isIgnored func(types.Path) bool
 	if ignored {
 		return
 	}
-	contentsBytes, err := ioutil.ReadFile(string(path))
+	contentsBytes, err := ioutil.ReadFile(path)
 	if err != nil {
 		err = errors.Wrap(err, "reading file")
 		return
 	}
-	contents = types.FileContents(contentsBytes)
+	file = types.File{
+		Contents: string(contentsBytes),
+		Path:     path,
+	}
 	return
 }
 
