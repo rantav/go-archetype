@@ -33,10 +33,10 @@ func Transform(source, destination string, transformations Transformations) erro
 			return nil
 		}
 
-		file, err = transformations.Transform(file)
 		if ignored {
 			log.Debugf("Ignoring file %s", path)
 		} else {
+			file, err = transformations.Transform(file)
 			err := writer.WriteFile(destination, file, info.Mode())
 			if err != nil {
 				return err
