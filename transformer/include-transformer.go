@@ -38,7 +38,10 @@ func (t *includeTransformer) GetFilePatterns() []types.FilePattern {
 }
 
 func (t *includeTransformer) Transform(input types.File) types.File {
-	if len(t.regionMarker) == 0 && !t.truthy {
+	if len(t.regionMarker) == 0 {
+		if t.truthy {
+			return input
+		}
 		// Discard the entire file
 		return types.File{
 			Discarded: true,

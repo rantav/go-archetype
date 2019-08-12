@@ -25,11 +25,11 @@ type Transformations struct {
 func (t Transformations) Transform(file types.File) (
 	newFile types.File, err error,
 ) {
-	// See if file already needs to be discarded
-	if file.Discarded {
-		return file, nil
-	}
 	for _, transformer := range t.transformers {
+		// See if file already needs to be discarded
+		if file.Discarded {
+			return file, nil
+		}
 		if !matched(file.Path, transformer.GetFilePatterns(), false) {
 			continue
 		}
