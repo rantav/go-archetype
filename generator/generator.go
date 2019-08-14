@@ -1,6 +1,9 @@
 package generator
 
 import (
+	"os"
+	"strings"
+
 	"github.com/davecgh/go-spew/spew"
 
 	"github.com/rantav/go-archetype/inputs"
@@ -25,7 +28,8 @@ func Generate(transformationsFile, source, destination string, inputArgs []strin
 		return err
 	}
 
-	err = transformations.Template()
+	vars := collectSystemAndEnvironmentVariables(source, destination)
+	err = transformations.Template(vars)
 	if err != nil {
 		return err
 	}
@@ -37,4 +41,16 @@ func Generate(transformationsFile, source, destination string, inputArgs []strin
 	}
 
 	return nil
+}
+
+// Collects environment variables as well as system variables, e.g. source and destination
+func collectSystemAndEnvironmentVariables(source, destination string) map[string]string {
+	vars := make(map[string]string)
+	for _, e := range os.Environ() {
+		pair := strings.Split(e, "=")
+		vars[pair[0]] = vars[pair[1]]
+	}
+	vars["source"] = source
+	vars["destination"] = destination
+	return vars
 }

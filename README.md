@@ -245,6 +245,16 @@ transformations:
 
 `project long description` should be placed before `project name`. If it weren't so then after applying ProjetName replacement on all occurences of the string `"go-archetype"` then the sentence `"Use go-archetype to transform project archetypes into existing live projects"` would have become `"Use my-project-name to transform project archetypes into existing live projects"` and then the replacement would not have been matched.
 
+## Before and After
+
+The `before` and `after` hooks allos you to run arbitrary shell command just before running all transformations or just after then.
+
+They are provided with useful context that can be used in the actual command, which includes:
+
+* `source` (Used as `{{ .source }}`)
+* `destination` (Used as `{{ .destination }}`)
+* As well as all user inputs
+
 ## Operations and debugging
 
 The view detailed logs, run with `LOG_LEVEL=debug`

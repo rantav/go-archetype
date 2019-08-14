@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/rantav/go-archetype/log"
+	"github.com/rantav/go-archetype/operations"
 	"github.com/rantav/go-archetype/reader"
 	"github.com/rantav/go-archetype/types"
 	"github.com/rantav/go-archetype/writer"
@@ -20,7 +21,12 @@ type Transformer interface {
 }
 
 func Transform(source, destination string, transformations Transformations) error {
-	return filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
+	err := before(transformations)
+	if err != nil {
+		return err
+	}
+
+	err = filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return errors.Wrap(err, "error walking to file")
 		}
@@ -44,4 +50,26 @@ func Transform(source, destination string, transformations Transformations) erro
 		}
 		return errors.Wrap(err, "transforming")
 	})
+	if err != nil {
+		return err
+	}
+
+	return after(transformations)
+}
+
+func before(ts Transformations) error {
+	return executeOperators(ts.before)
+}
+
+func after(ts Transformations) error {
+	return executeOperators(ts.after)
+}
+
+func executeOperators(ops []operations.Operator) error {
+	for _, op := range ops {
+		if err := op.Operate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }

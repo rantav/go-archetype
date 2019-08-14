@@ -3,6 +3,7 @@ package transformer
 import (
 	"strings"
 
+	"github.com/rantav/go-archetype/template"
 	"github.com/rantav/go-archetype/types"
 )
 
@@ -31,7 +32,7 @@ func (t *textReplacer) Transform(input types.File) types.File {
 
 func (t *textReplacer) Template(vars map[string]string) error {
 	var err error
-	t.replacement, err = template(t.replacement, vars)
+	t.replacement, err = template.Execute(t.replacement, vars)
 	return err
 }
 

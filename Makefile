@@ -30,7 +30,9 @@ test-template: cleanup-test-dir
 		--source=. \
 		--destination=$(TMP_DIR) \
 		-- \
-		--ProjectName my-go-project
+		--ProjectName my-go-project \
+		--IncludeReadme no \
+		--ProjectDescription "bla bla"
 
 	cd $(TMP_DIR) &&\
 		make

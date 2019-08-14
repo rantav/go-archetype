@@ -1,4 +1,4 @@
-package transformer
+package template
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ import (
 func TestEvaluateCondition(t *testing.T) {
 	assert := assert.New(t)
 	tester := func(name string, expected bool, shouldErr bool, condition string, vars map[string]string) {
-		truthy, err := evaluateCondition(condition, vars)
+		truthy, err := EvaluateCondition(condition, vars)
 		if shouldErr {
 			assert.Errorf(err, "Failed, expected error but there is none: %s", name)
 			return
@@ -69,6 +69,6 @@ func TestEvaluateCondition(t *testing.T) {
 
 func TestEvaluateConditionSad(t *testing.T) {
 	assert := assert.New(t)
-	_, err := evaluateCondition("!.x", nil)
+	_, err := EvaluateCondition("!.x", nil)
 	assert.Error(err)
 }

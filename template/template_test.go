@@ -1,4 +1,4 @@
-package transformer
+package template
 
 import (
 	"testing"
@@ -10,15 +10,15 @@ import (
 func TestTempalte(t *testing.T) {
 	assert := assert.New(t)
 
-	result, err := template("", nil)
+	result, err := Execute("", nil)
 	require.NoError(t, err)
 	assert.Empty(result)
 
 	// buggy template
-	_, err = template("{{}}", nil)
+	_, err = Execute("{{}}", nil)
 	assert.Error(err)
 
-	result, err = template("hello {{.x}}", map[string]string{"x": "world"})
+	result, err = Execute("hello {{.x}}", map[string]string{"x": "world"})
 	require.NoError(t, err)
 	assert.Equal("hello world", result)
 }

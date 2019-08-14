@@ -1,4 +1,4 @@
-package transformer
+package template
 
 import (
 	"bytes"
@@ -11,7 +11,7 @@ import (
 
 // Evaluates the condition in the syntax of go template if conditions and returns true
 // if this condition holds true.
-func evaluateCondition(condition string, vars map[string]string) (bool, error) {
+func EvaluateCondition(condition string, vars map[string]string) (bool, error) {
 	// Create a template and contains the condition in order to evaluate it
 	condition = fixSingleTermConditionSpecialCase(condition)
 	text := fmt.Sprintf("{{if %s}}true{{end}}", condition)

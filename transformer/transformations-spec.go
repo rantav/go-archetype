@@ -2,6 +2,7 @@ package transformer
 
 import (
 	"github.com/rantav/go-archetype/inputs"
+	"github.com/rantav/go-archetype/operations"
 )
 
 const (
@@ -13,6 +14,8 @@ type transformationsSpec struct {
 	Ignore          []string             `yaml:"ignore"`
 	Inputs          []inputs.InputSpec   `yaml:"inputs"`
 	Transformations []transformationSpec `yaml:"transformations"`
+	Before          operations.Spec      `yaml:"before"`
+	After           operations.Spec      `yaml:"after"`
 }
 
 type transformationSpec struct {

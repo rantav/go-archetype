@@ -63,7 +63,7 @@ func TestTransformationsTemplate(t *testing.T) {
 			inputs.NewPrompt(inputs.InputSpec{Type: "text"}),
 		},
 	}
-	err := ts.Template()
+	err := ts.Template(make(map[string]string))
 	require.NoError(t, err)
 }
 

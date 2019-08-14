@@ -1,4 +1,4 @@
-package transformer
+package template
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func template(text string, vars map[string]string) (string, error) {
+func Execute(text string, vars map[string]string) (string, error) {
 	tmpl, err := tt.New("t").Funcs(textmap(sprig.FuncMap())).Parse(text)
 	if err != nil {
 		return "", errors.Wrap(err, "error creating the text template")

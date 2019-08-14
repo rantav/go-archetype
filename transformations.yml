@@ -1,4 +1,4 @@
-ignore: [".git/", "transformations.yml"]
+ignore: [".git/", "transformations.yml", ".DS_Store"]
 inputs:
   - id: ProjectName # Must be a unique ID. Can be used also as CLI arg
     text: What is the project name?
@@ -9,6 +9,10 @@ inputs:
   - id: ProjectDescription
     text: Please provide a long project description
     type: text
+before:
+  operations:
+    - sh:
+      - ls {{ .destination }}
 transformations:
   - name: include the readme file
     type: include
@@ -35,3 +39,7 @@ transformations:
     pattern: go-archetype
     replacement: "{{ .ProjectName }}" # Reference to an input ID; go templates syntax
     files: ["*.go", "**/*.go"]
+after:
+  operations:
+    - sh:
+      - echo Done archetyping from {{ .source }} => {{ .destination }} of project {{ .ProjectName }}

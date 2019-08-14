@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/rantav/go-archetype/log"
+	"github.com/rantav/go-archetype/template"
 	"github.com/rantav/go-archetype/types"
 )
 
@@ -90,7 +91,7 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 
 func (t *includeTransformer) Template(vars map[string]string) error {
 	var err error
-	t.truthy, err = evaluateCondition(t.condition, vars)
+	t.truthy, err = template.EvaluateCondition(t.condition, vars)
 	return err
 }
 

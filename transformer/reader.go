@@ -6,6 +6,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/rantav/go-archetype/inputs"
+	"github.com/rantav/go-archetype/operations"
 	"github.com/rantav/go-archetype/types"
 )
 
@@ -28,6 +29,8 @@ func FromSpec(spec transformationsSpec) (*Transformations, error) {
 		transformers: transformersFromSpec(spec.Transformations),
 		prompters:    inputs.FromSpec(spec.Inputs),
 		userInputs:   make(map[string]inputs.PromptResponse),
+		before:       operations.FromSpec(spec.Before),
+		after:        operations.FromSpec(spec.After),
 	}, nil
 }
 

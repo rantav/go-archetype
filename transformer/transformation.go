@@ -5,6 +5,7 @@ import (
 
 	"github.com/rantav/go-archetype/inputs"
 	"github.com/rantav/go-archetype/log"
+	"github.com/rantav/go-archetype/operations"
 	"github.com/rantav/go-archetype/types"
 )
 
@@ -20,6 +21,10 @@ type Transformations struct {
 
 	// User's responses to prompters
 	userInputs map[string]inputs.PromptResponse
+
+	// Before and after operators
+	before []operations.Operator
+	after  []operations.Operator
 }
 
 func (t Transformations) Transform(file types.File) (
@@ -51,13 +56,27 @@ func (t *Transformations) SetResponse(response inputs.PromptResponse) {
 	t.userInputs[response.ID] = response
 }
 
-func (t *Transformations) Template() error {
-	inputsAsMap := make(map[string]string)
+func (t *Transformations) Template(vars map[string]string) error {
+	// Add user inputs
 	for _, input := range t.userInputs {
-		inputsAsMap[input.ID] = input.Answer
+		vars[input.ID] = input.Answer
 	}
+
 	for _, tr := range t.transformers {
-		err := tr.Template(inputsAsMap)
+		err := tr.Template(vars)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, op := range t.before {
+		err := op.Template(vars)
+		if err != nil {
+			return err
+		}
+	}
+	for _, op := range t.after {
+		err := op.Template(vars)
 		if err != nil {
 			return err
 		}
