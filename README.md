@@ -102,7 +102,127 @@ in uppercase in the readme file and lowercase in source files. To that end we pr
 
 We include out the the box the [sprig](http://masterminds.github.io/sprig/strings.html) library, which includes many differnet string manipulation functions, to list a few: `trim`, `trimAll`, `trimSuffix`, `trimPrefix`, `upper`, `lower`, `title`, `wrap`, `plural`, `snakecase`, `camelcase`, `kebabcase` etc.
 
-## Order of exacution
+## Transformers
+
+There are two types of transformers: *include* and *replace*.
+
+### The *include* transformer
+
+  TODO: high level
+
+All files that pass the global ignore filter are included by default. Unless one or more of the *include* rules with an empty `region_marker` applies to them, in which case the files are included only if the condition evaluates to true.
+
+Condition is a go template condition as can be used in an `{{if}}` expression. As such a simple boolean is expressed as simply `.var` where `var` is typically a user input.
+
+For example with the following user input:
+
+```yml
+inputs:
+  - id: IncludeReadme
+    text: Would you like to include the readme file?
+    type: yesno
+```
+
+It is possbible to define the following include transformer:
+
+```yml
+transformations:
+  - name: include the readme file
+    type: include
+    region_marker: # When there's no marker, the entire file(s) is included
+    condition: .IncludeReadme
+    files: ["README.md"]
+```
+
+Note that when there's no `region_marker` that simply means that the entire file is included/excluded based on the user's input.
+
+More sophisticated expresions could also be utilized, such as boolean algebra, using `and .x .y`, `or .x .y` etc (`x` and `y` are user inputs). For a complete reference, see [go templates](https://golang.org/pkg/text/template/).
+
+#### Don't forget the dot.
+
+Keep in mind that go templates require a dot (`.`) to prepend a value. So when utilizing user input, for example such as `IncludeReadme` be sure to prepend the dot, e.g. `.IncludeReadme` whenever used in conditions or replacements.
+
+One caveat to that is that for simplicity go-archetype allows dot-less conditions when they are very simple, e.g. only `variable`, such as `IncludeReadme`. So the following conditions are actually equivalent:
+
+```
+condition: .IncludeReadme
+```
+
+and
+
+```
+condition: IncludeReadme # No dot here
+```
+
+This is done in order to simplify the simple single-operand conditions. However, with more complex conditions be sure to prepend the dot.
+For example the following condition is valid where x and y are user inputs:
+
+```
+condition: and .x .y
+```
+
+But the following is not valid:
+
+```
+condition: and x y # Not valid. x and y need to be prepended by a dot .
+```
+
+### The *replace* transformer
+
+  TODO
+
+### Recepies
+
+#### Always ignore
+
+To always exclude some parts of the output regardless of user input, do as follows:
+
+```yml
+transformers:
+  - name: do not include template code in the final output
+    type: include
+    region_marker: __DO_NOT_INCLUDE__
+    condition: false
+    files: ["**"]
+```
+
+And then in your source file(s):
+
+```
+# BEGIN __DO_NOT_INCLUDE__
+... Code that should neven be included in the final output, such as
+... templating specific scripts, makefiles etc
+# END __DO_NOT_INCLUDE__
+```
+
+#### Conditional replace
+
+Sometimes you need to conditionally replace a pattern. The condition may depend on user input. For example you may ask the user whether they'd like to includ gRPC functionality in the project or not and based on that render a different makefile.
+
+Since the underlying rendering engine uses [go templates](https://golang.org/pkg/text/template/) it is possible to utilize the following condition:
+
+```
+{{ if .include_grpc }}build: build-grpc{{ else }}build:{{end}}
+```
+
+This condition will render `build:` if `.include_grpc` is false and `build: build-grpc` if `.include_grpc` is true. `include_grpc` is a user input in this case.
+
+The complete example would look as follows then:
+
+```yml
+inputs:
+  - id: include_grpc
+    text: Should gRPC functionality be included?
+    type: yesno
+transformations:
+  - name: build with grpc or not
+    type: replace
+    pattern: "build: build-grpc"
+    replacement: "{{ if .include_grpc }}build: build-grpc{{ else }}build:{{end}}"
+    files: ["Makefile"]
+```
+
+## Order of execution
 
 Transformatinos are executed by the order they appear inside the transformations.yml file. The output of the first transformation is then piped into the input of the second transformation and so forth.
 That means that the order is important such that if you're pattern needs to match certain text, you need to make sure that no previous transformation had changed this text. That's why it's wise to start with the more specific replacements and then move on to the more generic replacements.

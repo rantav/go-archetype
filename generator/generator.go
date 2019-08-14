@@ -4,6 +4,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 
 	"github.com/rantav/go-archetype/inputs"
+	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/transformer"
 )
 
@@ -29,7 +30,7 @@ func Generate(transformationsFile, source, destination string, inputArgs []strin
 		return err
 	}
 
-	spew.Dump(transformations)
+	log.Debugf(spew.Sdump(transformations))
 	err = transformer.Transform(source, destination, *transformations)
 	if err != nil {
 		return err
