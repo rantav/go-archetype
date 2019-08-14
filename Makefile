@@ -37,6 +37,9 @@ test-template: cleanup-test-dir
 	cd $(TMP_DIR) &&\
 		make
 
+test-goreleaser-config:
+	goreleaser --snapshot --skip-publish --rm-dist
+
 setup: setup-git-hooks
 
 setup-git-hooks:
