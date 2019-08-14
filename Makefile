@@ -16,10 +16,10 @@ test: build
 	go test -cover -race ./...
 
 test-coverage:
-	go test ./... -race -coverprofile=.testCoverage.txt && go tool cover -html=.testCoverage.txt
+	go test ./... -race -coverprofile=coverage.txt && go tool cover -html=coverage.txt
 
 ci-test: build
-	go test -race $$(go list ./...) -v -coverprofile .testCoverage.txt
+	go test -race $$(go list ./...) -v -coverprofile coverage.txt -covermode=atomic
 
 cleanup-test-dir:
 	rm -rf $(TMP_DIR)

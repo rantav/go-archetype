@@ -2,3 +2,4 @@
 .DS_Store
 go-archetype
 dist/
+coverage.txt

@@ -32,14 +32,16 @@ notifications:
 # script always runs to completion (set +e). If we have linter issues AND a
 # failing test, we want to see both. Configure golangci-lint with a
 # .golangci.yml file at the top level of your repo.
-# script:
-#   - make
-  # - golangci-lint run       # run a bunch of code checkers/linters in parallel
-  #  - go test -v -race ./...  # Run all the tests with the race detector enabled
+script:
+  - make ci-test
+  - make lint
+
 deploy:
 - provider: script
   skip_cleanup: true
-  script: curl -sL https://git.io/goreleaser | bash
+  script:
+    - git co go.*
+    - curl -sL https://git.io/goreleaser | bash
   on:
     tags: true
     condition: $TRAVIS_OS_NAME = linux
