@@ -42,4 +42,4 @@ transformations:
 after:
   operations:
     - sh:
-      - echo Done archetyping from {{ .source }} => {{ .destination }} of project {{ .ProjectName }}
+      - echo Done archetyping from {{ .source }} to {{ .destination }} of project {{ .ProjectName }}

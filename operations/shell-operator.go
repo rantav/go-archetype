@@ -3,7 +3,6 @@ package operations
 import (
 	"bytes"
 	"os/exec"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -41,22 +40,16 @@ func (o *shellOperation) Template(vars map[string]string) error {
 }
 
 func executeShell(shellLine string) error {
-	var (
-		byWord  = strings.Split(shellLine, " ")
-		program = byWord[0]
-		args    []string
-	)
-	if len(byWord) > 1 {
-		args = byWord[1:]
-	}
-	cmd := exec.Command(program, args...)
-	var out bytes.Buffer
-	cmd.Stdout = &out
+	cmd := exec.Command("sh", "-c", shellLine)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
 	log.Infof("Running command: %s", shellLine)
 	err := cmd.Run()
 	if err != nil {
+		log.Errorf("Error running command.\n\t STDOUT: %s \n\n\t STDERR: %s", stdout.String(), stderr.String())
 		return errors.Wrapf(err, "error running command %s", shellLine)
 	}
-	log.Infof("Output: %s", out.String())
+	log.Infof("Output: %s", stdout.String())
 	return nil
 }
