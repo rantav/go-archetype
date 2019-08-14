@@ -222,6 +222,24 @@ transformations:
     files: ["Makefile"]
 ```
 
+#### Change to CamelCase
+
+If you have a string that you'd like to change to CamelCase, for example `my-project`, first convert to snake_case and then to CamelCase. This is unfortunately a limitation of sprig.
+
+Example:
+
+```
+replacement: "{{ .name | snakecase | camelcase }}"
+```
+
+Changing to camelCase where the first letter is lowercased is even more ticky, but here goes:
+
+```
+replacement: "{{ .name | snakecase | camelcase | swapcase | title | swapcase }}"
+```
+
+Yeah it works...
+
 ## Order of execution
 
 Transformatinos are executed by the order they appear inside the transformations.yml file. The output of the first transformation is then piped into the input of the second transformation and so forth.
