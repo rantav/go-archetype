@@ -1,6 +1,10 @@
 # go-archetype
 
-go-archetype is a tool for creating project archetypes.
+[![Build Status](https://travis-ci.com/rantav/go-archetype.svg?branch=master)](https://travis-ci.com/rantav/go-archetype)
+
+*Dead simple project blueprints for the rest of us.*
+
+go-archetype is a tool for creating project blueprints (aka archetypes) in your native language.
 
 If you or your company create new projects and you want all these projects to preserve a similar structure or simply create a good starting point for other develoeprs, use go-archetype to define project archtypes (templates).
 
