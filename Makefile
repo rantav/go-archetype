@@ -40,6 +40,15 @@ test-template: cleanup-test-dir
 test-goreleaser-config:
 	goreleaser --snapshot --skip-publish --rm-dist
 
+release: guard-TAG
+	@echo
+	@echo Current tags: $(git tag)
+	@echo
+	@echo Adding new tag: $(TAG)
+	@echo
+	git tag -a v$(TAG)
+	git push --tags
+
 setup: setup-git-hooks
 
 setup-git-hooks:
@@ -50,3 +59,9 @@ lint: $(GOLANGCI_LINT)
 
 $(GOLANGCI_LINT):
 	GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
+
+guard-%:
+	@ if [ "${${*}}" = "" ]; then \
+		echo "Environment variable $* not set"; \
+		exit 1; \
+	fi
