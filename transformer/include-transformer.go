@@ -74,7 +74,8 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 		}
 	}
 	if scanner.Err() != nil {
-		log.Errorf("Error while scanning file: %+v.\n\n Contents: %v", scanner.Err(), input)
+		log.Errorf("Error while scanning file %s: %+v.\n\n Contents: %s ...",
+			scanner.Err(), input.Path, input.Contents[:100])
 	}
 
 	newContents := output.String()
