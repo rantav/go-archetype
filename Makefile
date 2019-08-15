@@ -42,7 +42,6 @@ test-goreleaser-config:
 
 release: guard-TAG
 	@echo
-	@echo Current tags: $(git tag)
 	@echo
 	@echo Adding new tag: $(TAG)
 	@echo
