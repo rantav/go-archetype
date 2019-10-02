@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// nolint:funlen
 func TestTransform(t *testing.T) {
 	assert := assert.New(t)
 	tester := func(name string, truthy bool, marker string, input, expectedOutput string, expectedDiscarded bool) {

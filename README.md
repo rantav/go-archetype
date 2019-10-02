@@ -4,25 +4,27 @@
 
 *Dead simple project blueprints for the rest of us.*
 
-go-archetype is a tool for creating project blueprints (aka archetypes) in your native language.
+*go-archetype* is a tool for creating project blueprints (aka archetypes) in your native language.
 
 If you or your company create new projects and you want all these projects to preserve a similar structure or simply create a good starting point for other develoeprs, use go-archetype to define project archtypes (templates).
 
 ## Concept
 
-Two roles are involved:
+Typically two roles are involved:
 
-* Archetype creator (typically a senior developer/architect)
-* Developer creating a new project
+* The **archetype creator** (typically a senior developer/architect)
+* The **developer** creating a new project
 
-### Archetype creator
+### The archetype creator
 
-As the archetype creator you create a template (aka blueprint) project. This project is fully functional, valid code written in Golang, JavaScript, Java, Python etc. (go-archetype is agnostic)
-And then you define a set of transformaitons. E.g. ask the user for the project name and replace here, here and here.
+As the archetype creator you create a template (aka blueprint) project. This project is fully functional, valid code written in your native language, be it Golang, JavaScript, Java, Python etc. (go-archetype is written in golang but can be used to generate tempaltes in any language)
+Then you define a set of transformaitons. E.g. ask the user for the project name and replace here, here and here.
+
+What you don't need to do is: Create a bluprint in a meta-language. Other templating tools, such as the python cookiecutter require you to write your blueprint (template) project in a meta-language, e.g. cookiecutter's language. With go-archetype you don't have to do that; your write your tempalte in your native language and then define a simple set of transformations for generating templates.
 
 ### Developer using the archetype
 
-As a developer creating a new project based on the archetype, you run `go-archetype` with a few parameters, you answer a few questions (such as what if you new project's name, these questions are defined by the archetype creator) and your new code is generated.
+As a developer creating a new project based on the archetype, you run `go-archetype` with a few parameters, you answer a few questions (defined by the template creator such as what is your new project's name, these questions are defined by the archetype creator) and your new code is generated.
 
 ### Summary
 
@@ -40,17 +42,17 @@ Here are the steps:
 
 The transformaitons file contains two main sections:
 
-* inputs
-* transformations
+* **inputs**
+* and **transformations**
 
 The *inputs* section defines user inputs, see description below.
-The *transformations* file defines the list of ordered transformations. also see below.
+The *transformations* section defines the list of ordered transformations as explained below.
 
 See the file transformations.yml in this very project as an example.
 
 ## Requesting for user input
 
-It is common to request user inputs in order to apply a set of transformations. For example you might want to request for the project name, description, wheather to include a readme file etc.
+It is common to request user inputs in order to apply a set of transformations. For example you might want to request for the project name, description, whether to include this or that functionality.
 
 There are two type of inputs: `text` and `yesno`.  Text provide simple, single-line text inputs. While yesno provides for a boolean [y/N] question.
 
@@ -66,15 +68,17 @@ inputs:
     type: yesno
 ```
 
-The `id` must be unique and is later also use for performing the transformations (see below).
+The `id` must be unique and is later also used for performing the transformations (see below).
 
-A user may provide the required inputs interactively when promped to when running go-archetype. The user may also provide the input as CLI arguments, which is useful for automation.
+A user may provide the required inputs interactively when promped to when running go-archetype.
 
-Interactive question example: (whent he user sees when runnin go-archetype)
+Likewise, The user may also provide the input as CLI arguments, which is useful for automation. (see example below)
+
+Interactive question example: (what the user sees while running go-archetype)
 
     ? Would you like to include the readme file? (y/N)
 
-Providing the input as CLI args:
+And when providing the input as CLI args:
 
 ```sh
 go-archetype transform --transformations=transformations.yml \
@@ -85,21 +89,22 @@ go-archetype transform --transformations=transformations.yml \
     --IncludeReadme yes
 ```
 
+In this example there are two inputs: `ProjectName` and `IncludeReadme`.
+
 To seperate program args from user input we use `--`. After the `--` the list of user inputs is provided.
 
 ## Templating user input
 
 After accepting user input you might want to transform and tempalte it.
 
-We use go templates. For full overview of the templating language see [text/template](https://golang.org/pkg/text/template/)
+We use go templates as a templatting languate. For the full overview of the templating language see [text/template](https://golang.org/pkg/text/template/)
 Following is a list of several examples to get you started.
 
-* User arewrapped in `{{` and `}}`
-* User inputs are prepended with `.`, so for example `{{.ProjectName}}`
-* You may combine user input with constats, for example `{{.ProjectName}} - {{.ProjectDescription}}
+* User inputs are wrapped in `{{` and `}}`
+* User inputs are prepended with `.`, so for example `{{.ProjectName}}` would yield the user's provided project name.
+* You may combine user input with constats, for example `{{.ProjectName}} - {{.ProjectDescription}}`, which concatenates the project's name with a hyphen and then it's description.
 
-Pipelines and functions are a useful concept. For example you might request the project's name and then display this project name
-in uppercase in the readme file and lowercase in source files. To that end we provide a host of **template pipelines**.
+Pipelines and functions are a useful concept. For example you might request the project's name and then display this project name  in uppercase in the readme file and lowercase in source files. To that end we provide a host of **template pipelines**.
 
     {{ .ProjectName | upper }} # ProjectName is provided by the user and we transform it to all uppercase. with the upper pipeline
     {{ wrap 80 .Description }} # Wordwrap the project description by 80 characters
@@ -108,11 +113,13 @@ We include out the the box the [sprig](http://masterminds.github.io/sprig/string
 
 ## Transformers
 
-There are two types of transformers: *include* and *replace*.
+There are two types of transformers: the **include** and **replace** transformers.
 
 ### The *include* transformer
 
-  TODO: high level
+The include transformer allows inclusion or exclusion of whole files as well as parts of files in the generated project. A simple example: you ask then user whether to include a README file and based on the answer you include or exlude this entire file.
+
+#### Including or exluding whole files
 
 All files that pass the global ignore filter are included by default. Unless one or more of the *include* rules with an empty `region_marker` applies to them, in which case the files are included only if the condition evaluates to true.
 
@@ -142,7 +149,7 @@ Note that when there's no `region_marker` that simply means that the entire file
 
 More sophisticated expresions could also be utilized, such as boolean algebra, using `and .x .y`, `or .x .y` etc (`x` and `y` are user inputs). For a complete reference, see [go templates](https://golang.org/pkg/text/template/).
 
-#### Don't forget the dot.
+#### Don't forget the dot `.`
 
 Keep in mind that go templates require a dot (`.`) to prepend a value. So when utilizing user input, for example such as `IncludeReadme` be sure to prepend the dot, e.g. `.IncludeReadme` whenever used in conditions or replacements.
 
@@ -171,11 +178,69 @@ But the following is not valid:
 condition: and x y # Not valid. x and y need to be prepended by a dot .
 ```
 
+#### Including or exluding parts of files
+
+Sometimes it's useful to conditionally include or exlude parts of files and not the entire files. To do this we utilize special region markers.
+
+Example:
+
+```go
+import (
+	"net"
+	"net/http"
+
+	"golang.org/x/sync/errgroup"
+
+	// BEGIN __INCLUDE_GRPC__
+	channelz "github.com/rantav/go-grpc-channelz"
+	channelzservice "google.golang.org/grpc/channelz/service"
+	// END __INCLUDE_GRPC__
+)
+```
+
+The includes `channelz` and `channelzservice` are only required in cases where the user selected to add gRPC functionality to the project.
+
+The corresponding transformations.yml file sections are:
+
+```yml
+inputs:
+  - id: include_grpc
+    text: Should gRPC functionality be included?
+    type: yesno
+
+transformations:
+  - name: "include grpc - parts of files"
+    type: include
+    region_marker: __INCLUDE_GRPC__
+    condition: .include_grpc
+    files: ["Makefile", "**/*.go", "deployments/*"] # optional, just as an example
+```
+
+To summarize, in cases where you'd like to include or exlude just parts of files (and not the entire file), you use special *region markers* inside the source code file. These region markers are simply comments in Go or in Java, PHP etc.
+
 ### The *replace* transformer
 
-  TODO
+This transformer performs a search and replace functionality. For example you might ask the user for the project anme and then replace the generic tempalte project name with the user's provided name
+
+Example:
+
+```yml
+inputs:
+  - id: name
+    text: What is the project name? (e.g. my-awesome-go-project)
+    type: text
+
+transformations:
+  - name: project name
+    type: replace # The type of the transformer is **replace**
+    pattern: go-template # The text pattern to search and replace
+    replacement: "{{ .name }}" # The text to replace. You may use go tempalates and perform arbitrary replacements.
+    files: ["*.go", "**/*.go", "**/*.sh", ".gitignore", "README.md"]
+```
 
 ### Recepies
+
+A list of useful recepies.
 
 #### Always ignore
 
