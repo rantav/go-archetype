@@ -34,6 +34,10 @@ Here are the steps:
 1. Architect defines a set of transformations in transformations.yml. These transformations are used for simple search-and-replace in the blueprint. (and there are more compicated types, see below)
 1. Developer runs go-archetype to create a new project based on the blueprint.
 
+### Example project
+Example project using go-archetype: https://github.com/rantav/go-template
+
+
 ## Usage
 
     go-archetype --transformaitons=transformations.yml --source=. --destination=/path/to/your/new/project
