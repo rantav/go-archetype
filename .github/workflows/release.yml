@@ -1,9 +1,8 @@
 name: goreleaser
 
 on:
-  pull_request:
   push:
-  #tags: "*"
+    tags: "*"
 
 jobs:
   goreleaser:
@@ -24,4 +23,3 @@ jobs:
             version: latest
           env:
               GOPROXY: https://proxy.golang.org,direct
-              GOPATH: /home/runner/work/go-template/go
