@@ -3,19 +3,25 @@ name: goreleaser
 on:
   pull_request:
   push:
+  tags: "*"
 
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@master
-      -
-        name: Set up Go
-        uses: actions/setup-go@master
-      -
-        name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@master
-        with:
-          version: latest
+
+        - name: Set up Go 1.13
+          uses: actions/setup-go@v1
+          with:
+            go-version: 1.13
+
+        - name: Checkout
+          uses: actions/checkout@master
+
+        - name: Run GoReleaser
+          uses: goreleaser/goreleaser-action@master
+          with:
+            version: latest
+          env:
+              GOPROXY: https://proxy.golang.org,direct
+              GOPATH: /home/runner/work/go-template/go
