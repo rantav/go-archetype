@@ -1,6 +1,6 @@
 # go-archetype
 
-[![Build Status](https://travis-ci.com/rantav/go-archetype.svg?branch=master)](https://travis-ci.com/rantav/go-archetype)
+[![Actions Status](https://github.com/rantav/go-archetype/workflows/Go/badge.svg)](https://github.com/rantav/go-archetype/actions)
 
 *Dead simple project blueprints for the rest of us.*
 
