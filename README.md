@@ -18,7 +18,7 @@ Typically two roles are involved:
 ### The archetype creator
 
 As the archetype creator you create a template (aka blueprint) project. This project is fully functional, valid code written in your native language, be it Golang, JavaScript, Java, Python etc. (go-archetype is written in golang but can be used to generate tempaltes in any language)
-Then you define a set of transformaitons. E.g. ask the user for the project name and replace here, here and here.
+Then you define a set of transformations. E.g. ask the user for the project name and replace here, here and here.
 
 What you don't need to do is: Create a bluprint in a meta-language. Other templating tools, such as the python cookiecutter require you to write your blueprint (template) project in a meta-language, e.g. cookiecutter's language. With go-archetype you don't have to do that; your write your tempalte in your native language and then define a simple set of transformations for generating templates.
 
@@ -40,11 +40,11 @@ Example project using go-archetype: https://github.com/rantav/go-template
 
 ## Usage
 
-    go-archetype --transformaitons=transformations.yml --source=. --destination=/path/to/your/new/project
+    go-archetype transform --transformations=transformations.yml --source=. --destination=/path/to/your/new/project
 
-## The transformaitons.yml file
+## The transformations.yml file
 
-The transformaitons file contains two main sections:
+The transformations file contains two main sections:
 
 * **inputs**
 * and **transformations**
