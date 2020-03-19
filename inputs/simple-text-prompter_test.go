@@ -16,5 +16,4 @@ func TestBeNiceAndTryToConvert(t *testing.T) {
 
 	assert.Equal("false", p.beNiceAndTryToConvert("no"))
 	assert.Equal("false", p.beNiceAndTryToConvert("false"))
-
 }

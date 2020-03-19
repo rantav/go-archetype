@@ -45,7 +45,8 @@ func Test_relative(t *testing.T) {
 			want: "a",
 		},
 	}
-	for _, tt := range tests {
+	for _, td := range tests {
+		tt := td
 		t.Run(tt.name, func(t *testing.T) {
 			if got := relative(tt.args.prefix, tt.args.path); got != tt.want {
 				t.Errorf("relative() = %v, want %v", got, tt.want)
