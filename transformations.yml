@@ -1,4 +1,4 @@
-ignore: [".git/", "transformations.yml", ".DS_Store"]
+ignore: [".git/", "transformations.yml", ".DS_Store", ".idea/", ".tmp/", "dist/", "go-archetype"]
 inputs:
   - id: ProjectName # Must be a unique ID. Can be used also as CLI arg
     text: What is the project name?
