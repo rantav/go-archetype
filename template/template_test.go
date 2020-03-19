@@ -14,7 +14,7 @@ func TestTempalte(t *testing.T) {
 	require.NoError(t, err)
 	assert.Empty(result)
 
-	// buggy template
+	// test a buggy template
 	_, err = Execute("{{}}", nil)
 	assert.Error(err)
 

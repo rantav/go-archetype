@@ -52,5 +52,4 @@ func TestParseCLIArgsInputs(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(p.Answered)
 	assert.Equal("y", p.Answer)
-
 }

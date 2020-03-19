@@ -1,4 +1,4 @@
-GOLANGCI_LINT_VERSION := v1.18.0
+GOLANGCI_LINT_VERSION := v1.21.0
 TMP_PROJECT_NAME=my-go-project
 TMP_DIR=.tmp/go/$(TMP_PROJECT_NAME)
 BIN_DIR := $(GOPATH)/bin
@@ -54,7 +54,7 @@ setup-git-hooks:
 	git config core.hooksPath .githooks
 
 lint: $(GOLANGCI_LINT)
-	$(GOPATH)/bin/golangci-lint run --fast --enable-all -D gochecknoglobals -D gochecknoinits -D prealloc
+	$(GOPATH)/bin/golangci-lint run --fast --enable-all -D gochecknoglobals -D gochecknoinits -D prealloc -D wsl
 
 $(GOLANGCI_LINT):
 	GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)

@@ -17,9 +17,9 @@ func TestWriteFileNoDiscard(t *testing.T) {
 	assert := assert.New(t)
 	destinationBase := tmpDir
 	file := types.File{
-		Contents:  "123",
-		Path:      "file.txt",
-		Discarded: false,
+		Contents:     "123",
+		RelativePath: "file.txt",
+		Discarded:    false,
 	}
 	mode := os.ModePerm
 	err := WriteFile(destinationBase, file, mode)
@@ -40,9 +40,9 @@ func TestWriteFileDiscard(t *testing.T) {
 	assert := assert.New(t)
 	destinationBase := tmpDir
 	file := types.File{
-		Contents:  "123",
-		Path:      "discarded",
-		Discarded: true,
+		Contents:     "123",
+		RelativePath: "discarded",
+		Discarded:    true,
 	}
 	mode := os.ModePerm
 	err := WriteFile(destinationBase, file, mode)

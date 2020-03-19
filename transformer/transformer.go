@@ -31,7 +31,7 @@ func Transform(source, destination string, transformations Transformations) erro
 			return errors.Wrap(err, "error walking to file")
 		}
 		sourceFile := path
-		isDir, ignored, file, err := reader.ReadFile(sourceFile, info, transformations.IsGloballyIgnored)
+		isDir, ignored, file, err := reader.ReadFile(sourceFile, info, source, transformations.IsGloballyIgnored)
 		if err != nil {
 			return errors.Wrap(err, "error reading file")
 		}

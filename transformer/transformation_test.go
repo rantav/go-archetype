@@ -30,8 +30,8 @@ func TestTransformationsTransform(t *testing.T) {
 			})},
 	}
 	file, err = ts.Transform(types.File{
-		Contents: "x",
-		Path:     "hello.go",
+		Contents:     "x",
+		RelativePath: "hello.go",
 	})
 	require.NoError(t, err)
 	assert.Equal("y", file.Contents)
@@ -46,8 +46,8 @@ func TestTransformationsTransform(t *testing.T) {
 			})},
 	}
 	file, err = ts.Transform(types.File{
-		Path:     "go.away",
-		Contents: "x",
+		RelativePath: "go.away",
+		Contents:     "x",
 	})
 	require.NoError(t, err)
 	assert.Equal("x", file.Contents)

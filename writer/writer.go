@@ -13,10 +13,10 @@ import (
 
 func WriteFile(destinationBase string, file types.File, mode os.FileMode) error {
 	if file.Discarded {
-		log.Debugf("File is discarded, not writing: %s", file.Path)
+		log.Debugf("File is discarded, not writing: %s", file.RelativePath)
 		return nil
 	}
-	destinationPath := filepath.Join(destinationBase, file.Path)
+	destinationPath := filepath.Join(destinationBase, file.RelativePath)
 	log.Infof("Writing file %s", destinationPath)
 	dir := filepath.Dir(destinationPath)
 	err := os.MkdirAll(dir, os.ModeDir|os.ModePerm)

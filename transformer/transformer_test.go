@@ -11,5 +11,4 @@ func TestTransformerTransform(t *testing.T) {
 	err := Transform(".", ".tmp/yyy", ts)
 
 	require.NoError(t, err)
-
 }
