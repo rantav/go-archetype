@@ -45,8 +45,9 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 		}
 		// Discard the entire file
 		return types.File{
-			Discarded: true,
-			Path:      input.Path,
+			Discarded:    true,
+			FullPath:     input.FullPath,
+			RelativePath: input.RelativePath,
 		}
 	}
 	// Locate begin and end lines of the markers
@@ -75,7 +76,7 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 	}
 	if scanner.Err() != nil {
 		log.Errorf("Error while scanning file %s: %+v.\n\n Contents: %s ...",
-			scanner.Err(), input.Path, input.Contents[:100])
+			scanner.Err(), input.FullPath, input.Contents[:100])
 	}
 
 	newContents := output.String()
@@ -85,8 +86,9 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 	}
 
 	return types.File{
-		Contents: newContents,
-		Path:     input.Path,
+		Contents:     newContents,
+		FullPath:     input.FullPath,
+		RelativePath: input.RelativePath,
 	}
 }
 

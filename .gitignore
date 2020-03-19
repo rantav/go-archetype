@@ -3,3 +3,4 @@
 go-archetype
 dist/
 coverage.txt
+.idea/

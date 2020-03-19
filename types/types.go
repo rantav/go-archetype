@@ -13,7 +13,7 @@ type FilePattern struct {
 
 func (f *FilePattern) Match(path string) (bool, error) {
 	if !f.compiled {
-		// Compile once, on demmand
+		// Compile once, on demand
 		var err error
 		f.glob, err = glob.Compile(f.Pattern, '/')
 		if err != nil {
@@ -34,7 +34,10 @@ func NewFilePatterns(paths []string) []FilePattern {
 
 type File struct {
 	Contents string
-	Path     string
+	// The full path to the original (source) file
+	FullPath string
+	// The relative path to the file (relative to the root of the project, e.g. source)
+	RelativePath string
 	// Mark this file as needs to be discarded (as opposed to just an empty file)
 	Discarded bool
 }

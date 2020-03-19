@@ -35,10 +35,10 @@ func (t Transformations) Transform(file types.File) (
 		if file.Discarded {
 			return file, nil
 		}
-		if !matched(file.Path, transformer.GetFilePatterns(), false) {
+		if !matched(file.RelativePath, transformer.GetFilePatterns(), false) {
 			continue
 		}
-		log.Debugf("Applying transformer [%s] to file [%s]", transformer.GetName(), file.Path)
+		log.Debugf("Applying transformer [%s] to file [%s]", transformer.GetName(), file.RelativePath)
 		file = transformer.Transform(file)
 	}
 	return file, nil
