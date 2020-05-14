@@ -20,7 +20,7 @@ jobs:
         - name: Run GoReleaser
           uses: goreleaser/goreleaser-action@master
           with:
-            version: latest
+            version: v1
           env:
               GOPROXY: https://proxy.golang.org,direct
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
