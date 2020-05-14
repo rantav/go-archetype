@@ -1,8 +1,10 @@
 package operations
 
 import (
+	"bufio"
 	"bytes"
 	"os/exec"
+	"strings"
 
 	"github.com/pkg/errors"
 
@@ -19,9 +21,13 @@ func newShellOperator(spec OperationSpec) *shellOperation {
 }
 
 func (o *shellOperation) Operate() error {
-	for _, line := range o.sh {
-		if err := executeShell(line); err != nil {
-			return err
+	for _, command := range o.sh {
+		scanner := bufio.NewScanner(strings.NewReader(command))
+		for scanner.Scan() {
+			line := scanner.Text()
+			if err := executeShell(line); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
