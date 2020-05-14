@@ -35,3 +35,10 @@ func TestShellOperatorOperate(t *testing.T) {
 	err := o.Operate()
 	require.NoError(t, err)
 }
+
+func TestShellOperatorOperateAndFail(t *testing.T) {
+	o := newShellOperator(OperationSpec{Sh: []string{"no-such-command really"}})
+	require.NotNil(t, o)
+	err := o.Operate()
+	require.Error(t, err)
+}
