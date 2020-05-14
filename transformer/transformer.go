@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 
@@ -21,7 +22,15 @@ type Transformer interface {
 }
 
 func Transform(source, destination string, transformations Transformations) error {
-	err := before(transformations)
+	empty, err := isDirEmptyOrDoesntExist(destination)
+	if err != nil {
+		return err
+	}
+	if !empty {
+		log.Errorf("Destination %s is not empty, aborting", destination)
+	}
+
+	err = before(transformations)
 	if err != nil {
 		return err
 	}
@@ -72,4 +81,25 @@ func executeOperators(ops []operations.Operator) error {
 		}
 	}
 	return nil
+}
+
+func isDirEmptyOrDoesntExist(path string) (bool, error) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		// OK, does not exist
+		return true, nil
+	}
+
+	f, err := os.Open(path)
+	if err != nil {
+		return false, err
+	}
+	defer f.Close()
+
+	_, err = f.Readdirnames(1) // Or f.Readdir(1)
+	if err == io.EOF {
+		// Empty dir
+		return true, nil
+	}
+
+	return false, err // Either not empty or error, suits both cases
 }
