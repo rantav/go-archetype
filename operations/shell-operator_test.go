@@ -36,8 +36,29 @@ func TestShellOperatorOperate(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestShellOperatorOperateMultiline(t *testing.T) {
+	o := newShellOperator(OperationSpec{Sh: []string{"echo hello\necho world"}})
+	require.NotNil(t, o)
+	err := o.Operate()
+	require.NoError(t, err)
+}
+
 func TestShellOperatorOperateAndFail(t *testing.T) {
 	o := newShellOperator(OperationSpec{Sh: []string{"no-such-command really"}})
+	require.NotNil(t, o)
+	err := o.Operate()
+	require.Error(t, err)
+}
+
+func TestShellOperatorOperateMultilineFail(t *testing.T) {
+	o := newShellOperator(OperationSpec{Sh: []string{"no-such-command at all\necho well"}})
+	require.NotNil(t, o)
+	err := o.Operate()
+	require.Error(t, err)
+}
+
+func TestShellOperatorOperateMultilineFail2(t *testing.T) {
+	o := newShellOperator(OperationSpec{Sh: []string{"echo ok\nno-such-command at all"}})
 	require.NotNil(t, o)
 	err := o.Operate()
 	require.Error(t, err)
