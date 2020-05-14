@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -8,8 +9,10 @@ import (
 )
 
 func TestTransformerTransform(t *testing.T) {
+	tmp := ".tmp/yyy"
+	os.RemoveAll(tmp)
 	ts := Transformations{}
-	err := Transform(".", ".tmp/yyy", ts)
+	err := Transform(".", tmp, ts)
 
 	require.NoError(t, err)
 }
