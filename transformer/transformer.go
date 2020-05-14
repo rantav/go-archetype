@@ -28,13 +28,16 @@ func Transform(source, destination string, transformations Transformations) erro
 	}
 	if !empty {
 		log.Errorf("Destination %s is not empty, aborting", destination)
+		return errors.New("Destinatinn is not empty")
 	}
 
+	// Before actions
 	err = before(transformations)
 	if err != nil {
 		return err
 	}
 
+	// All transformations
 	err = filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return errors.Wrap(err, "error walking to file")
@@ -63,6 +66,7 @@ func Transform(source, destination string, transformations Transformations) erro
 		return err
 	}
 
+	// After actions
 	return after(transformations)
 }
 
