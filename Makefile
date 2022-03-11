@@ -53,23 +53,8 @@ setup: setup-git-hooks
 setup-git-hooks:
 	git config core.hooksPath .githooks
 
-# TODO (@titusjaka): add .golangci.yml config and simplify this step
 lint: $(GOLANGCI_LINT)
-	$(GOLANGCI_LINT) run --fast \
-		--enable-all \
-		-D gochecknoglobals \
-		-D gochecknoinits \
-		-D prealloc \
-		-D wsl \
-		-D forbidigo \
-		-D godot \
-		-D gofumpt \
-		-D gci \
-		-D ifshort \
-		-D nlreturn \
-		-D paralleltest \
-		-D tagliatelle \
-		-D testpackage
+	$(GOLANGCI_LINT) run
 
 $(GOLANGCI_LINT):
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(BIN_DIR) $(GOLANGCI_LINT_VERSION)

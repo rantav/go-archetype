@@ -1,0 +1,35 @@
+linters:
+  enable-all: false
+  disable-all: true
+  enable:
+    - asciicheck
+    - bidichk
+    - containedctx
+    - decorder
+    - dogsled
+    - dupl
+    - forcetypeassert
+    - funlen
+    - gocognit
+    - goconst
+    - gocyclo
+    - godox
+    - gofmt
+    - goheader
+    - goimports
+    - gomnd
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - grouper
+    - ineffassign
+    - lll
+    - maintidx
+    - misspell
+    - nakedret
+    - nestif
+    - nolintlint
+    - predeclared
+    - promlinter
+    - whitespace
+  fast: true

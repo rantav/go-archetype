@@ -36,24 +36,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      # TODO (@titusjaka): add .golangci.yml config and simplify this step
       - name: lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.44.2
-          args: >
-            --fast 
-            --enable-all 
-            -D gochecknoglobals 
-            -D gochecknoinits 
-            -D prealloc 
-            -D wsl
-            -D forbidigo
-            -D godot
-            -D gofumpt
-            -D gci
-            -D ifshort
-            -D nlreturn
-            -D paralleltest
-            -D tagliatelle
-            -D testpackage
