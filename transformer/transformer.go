@@ -1,11 +1,11 @@
 package transformer
 
 import (
+	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
-
-	"github.com/pkg/errors"
 
 	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/operations"
@@ -28,7 +28,7 @@ func Transform(source, destination string, transformations Transformations) erro
 	}
 	if !empty {
 		log.Errorf("Destination %s is not empty, aborting", destination)
-		return errors.New("Destinatinn is not empty")
+		return errors.New("destination is not empty")
 	}
 
 	// Before actions
@@ -40,12 +40,12 @@ func Transform(source, destination string, transformations Transformations) erro
 	// All transformations
 	err = filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return errors.Wrap(err, "error walking to file")
+			return fmt.Errorf("error walking to file: %w", err)
 		}
 		sourceFile := path
 		isDir, ignored, file, err := reader.ReadFile(sourceFile, info, source, transformations.IsGloballyIgnored)
 		if err != nil {
-			return errors.Wrap(err, "error reading file")
+			return fmt.Errorf("error reading file: %w", err)
 		}
 		if isDir {
 			return nil
@@ -55,12 +55,14 @@ func Transform(source, destination string, transformations Transformations) erro
 			log.Debugf("Ignoring file %s", path)
 		} else {
 			file, err = transformations.Transform(file)
-			err := writer.WriteFile(destination, file, info.Mode())
-			if err != nil {
-				return err
+			if writeErr := writer.WriteFile(destination, file, info.Mode()); writeErr != nil {
+				return writeErr
 			}
 		}
-		return errors.Wrap(err, "transforming")
+		if err != nil {
+			return fmt.Errorf("transforming: %w", err)
+		}
+		return nil
 	})
 	if err != nil {
 		return err

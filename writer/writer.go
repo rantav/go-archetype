@@ -1,11 +1,10 @@
 package writer
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	"github.com/pkg/errors"
 
 	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/types"
@@ -21,8 +20,10 @@ func WriteFile(destinationBase string, file types.File, mode os.FileMode) error 
 	dir := filepath.Dir(destinationPath)
 	err := os.MkdirAll(dir, os.ModeDir|os.ModePerm)
 	if err != nil {
-		return errors.Wrap(err, "error creating base dir for file")
+		return fmt.Errorf("error creating base dir for file: %w", err)
 	}
-	err = ioutil.WriteFile(destinationPath, []byte(file.Contents), mode)
-	return errors.Wrap(err, "error writing file")
+	if err = ioutil.WriteFile(destinationPath, []byte(file.Contents), mode); err != nil {
+		return fmt.Errorf("error writing file: %w", err)
+	}
+	return nil
 }

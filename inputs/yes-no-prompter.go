@@ -1,12 +1,12 @@
 package inputs
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -35,7 +35,7 @@ func (p *yesNoPrompter) Prompt() (PromptResponse, error) {
 	}
 	err := survey.AskOne(prompt, &yes)
 	if err != nil {
-		return PromptResponse{}, errors.Wrap(err, "prompt error")
+		return PromptResponse{}, fmt.Errorf("prompt error: %w", err)
 	}
 	if yes {
 		answer = trueS

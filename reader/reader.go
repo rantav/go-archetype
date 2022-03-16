@@ -7,8 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pkg/errors"
-
 	"github.com/rantav/go-archetype/types"
 )
 
@@ -17,8 +15,7 @@ func ReadFile(path string, info os.FileInfo, sourceDir string, isIgnored func(st
 ) {
 	isDir, err = isDirectory(info)
 	if err != nil {
-		err = errors.Wrap(err, "checking if dir")
-		return
+		return isDir, ignored, file, fmt.Errorf("checking if dir: %w", err)
 	}
 	if isDir {
 		return
@@ -31,8 +28,7 @@ func ReadFile(path string, info os.FileInfo, sourceDir string, isIgnored func(st
 	}
 	contentsBytes, err := ioutil.ReadFile(path)
 	if err != nil {
-		err = errors.Wrap(err, "reading file")
-		return
+		return isDir, ignored, file, fmt.Errorf("reading file: %w", err)
 	}
 	file = types.File{
 		Contents:     string(contentsBytes),

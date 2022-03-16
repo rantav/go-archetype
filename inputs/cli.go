@@ -1,7 +1,8 @@
 package inputs
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
 	"github.com/spf13/pflag"
 )
 
@@ -44,7 +45,7 @@ func parseUserInputCliArgs(definedArgNames []string, providedArgs []string) ([]*
 	}
 	err := flagSet.Parse(providedArgs)
 	if err != nil {
-		return nil, errors.Wrap(err, "parsing CLI args")
+		return nil, fmt.Errorf("parsing CLI args: %w", err)
 	}
 	// clean up the notSet values
 	for i := range providedCLIArgs {
