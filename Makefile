@@ -1,7 +1,7 @@
-GOLANGCI_LINT_VERSION := v1.21.0
+GOLANGCI_LINT_VERSION := v1.44.2
 TMP_PROJECT_NAME=my-go-project
 TMP_DIR=.tmp/go/$(TMP_PROJECT_NAME)
-BIN_DIR := $(GOPATH)/bin
+BIN_DIR := $(shell go env GOPATH)/bin
 GOLANGCI_LINT := $(BIN_DIR)/golangci-lint
 
 all: test lint
@@ -54,10 +54,10 @@ setup-git-hooks:
 	git config core.hooksPath .githooks
 
 lint: $(GOLANGCI_LINT)
-	$(GOPATH)/bin/golangci-lint run --fast --enable-all -D gochecknoglobals -D gochecknoinits -D prealloc -D wsl
+	$(GOLANGCI_LINT) run
 
 $(GOLANGCI_LINT):
-	GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(BIN_DIR) $(GOLANGCI_LINT_VERSION)
 
 guard-%:
 	@ if [ "${${*}}" = "" ]; then \

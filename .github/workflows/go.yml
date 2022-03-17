@@ -1,5 +1,5 @@
 name: Go
-on: [push]
+on: [ push ]
 jobs:
 
   build:
@@ -7,27 +7,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Set up Go 1.13
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.13
-      id: go
+      - name: Set up Go 1.17
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+        id: go
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
-      with:
-          path: go/src/github.com/rantav/go-template
+      - name: Check out code
+        uses: actions/checkout@v3
 
-    - name: Build and test
-      env:
-          GOPROXY: https://proxy.golang.org,direct
-          GOPATH: /home/runner/work/go-template/go
-      run: |
-        export PATH=$GOPATH/bin:$PATH
-        make ci-test
-        make lint
+      - name: Build and test
+        run: make ci-test
 
-    - name: Send code coverage report
-      run: |
+      - name: Send code coverage report
+        run: |
           bash <(curl -s https://codecov.io/bash)
           git checkout go.*
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.17
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+        id: go
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.44.2

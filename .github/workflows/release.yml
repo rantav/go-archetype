@@ -2,22 +2,20 @@ name: goreleaser
 
 on:
   push:
-    tags: 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-      -
-        name: Set up Go
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.14
-      -
-        name: Run GoReleaser
+          go-version: 1.17
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
