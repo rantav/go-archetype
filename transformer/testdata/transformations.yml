@@ -42,5 +42,4 @@ transformations:
 after:
   operations:
     - sh:
-      - cd {{.destination}} && gofmt -s -w .
       - echo Done archetyping from {{ .source }} to {{ .destination }} of project {{ .ProjectName }}

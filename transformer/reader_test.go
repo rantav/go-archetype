@@ -10,10 +10,10 @@ import (
 func TestRead(t *testing.T) {
 	assert := assert.New(t)
 
-	transformations, err := Read("../transformations.yml")
+	transformations, err := Read("./testdata/transformations.yml")
 	require.NoError(t, err)
 	assert.NotNil(transformations)
 
-	assert.Equal(3, len(transformations.GetInputPrompters()))
-	assert.Equal(5, len(transformations.transformers))
+	assert.Len(transformations.GetInputPrompters(), 3)
+	assert.Len(transformations.transformers, 5)
 }
