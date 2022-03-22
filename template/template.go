@@ -2,22 +2,22 @@ package template
 
 import (
 	"bytes"
+	"fmt"
 	ht "html/template"
 	tt "text/template"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/pkg/errors"
 )
 
 func Execute(text string, vars map[string]string) (string, error) {
 	tmpl, err := tt.New("t").Funcs(textmap(sprig.FuncMap())).Parse(text)
 	if err != nil {
-		return "", errors.Wrap(err, "error creating the text template")
+		return "", fmt.Errorf("error creating the text template: %w", err)
 	}
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, vars)
 	if err != nil {
-		return "", errors.Wrap(err, "error templating")
+		return "", fmt.Errorf("error templating: %w", err)
 	}
 	return buf.String(), nil
 }

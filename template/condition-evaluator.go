@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 	tt "text/template"
-
-	"github.com/pkg/errors"
 )
 
 // Evaluates the condition in the syntax of go template if conditions and returns true
@@ -17,12 +15,12 @@ func EvaluateCondition(condition string, vars map[string]string) (bool, error) {
 	text := fmt.Sprintf("{{if %s}}true{{end}}", condition)
 	tmpl, err := tt.New("t").Parse(text)
 	if err != nil {
-		return false, errors.Wrap(err, "error creating the text template")
+		return false, fmt.Errorf("error creating the text template: %w", err)
 	}
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, vars)
 	if err != nil {
-		return false, errors.Wrap(err, "error templating")
+		return false, fmt.Errorf("error templating: %w", err)
 	}
 	val := buf.String() == "true"
 	return val, nil

@@ -3,10 +3,9 @@ package operations
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"os/exec"
 	"strings"
-
-	"github.com/pkg/errors"
 
 	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/template"
@@ -54,7 +53,7 @@ func executeShell(shellLine string) error {
 	err := cmd.Run()
 	if err != nil {
 		log.Errorf("Error running command.\n\t STDOUT: %s \n\n\t STDERR: %s", stdout.String(), stderr.String())
-		return errors.Wrapf(err, "error running command %s", shellLine)
+		return fmt.Errorf("error running command %s: %w", shellLine, err)
 	}
 	log.Infof("Output: %s", stdout.String())
 	return nil

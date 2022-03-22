@@ -1,8 +1,9 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/gobwas/glob"
-	"github.com/pkg/errors"
 )
 
 type FilePattern struct {
@@ -17,7 +18,7 @@ func (f *FilePattern) Match(path string) (bool, error) {
 		var err error
 		f.glob, err = glob.Compile(f.Pattern, '/')
 		if err != nil {
-			return false, errors.Wrapf(err, "error compiling pattern %s", f.Pattern)
+			return false, fmt.Errorf("error compiling pattern %s: %w", f.Pattern, err)
 		}
 		f.compiled = true
 	}

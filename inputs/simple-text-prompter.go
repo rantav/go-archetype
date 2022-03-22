@@ -1,8 +1,9 @@
 package inputs
 
 import (
+	"fmt"
+
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/pkg/errors"
 )
 
 type simpleTextPrompter struct {
@@ -23,7 +24,7 @@ func (p *simpleTextPrompter) Prompt() (PromptResponse, error) {
 	}
 	err := survey.AskOne(prompt, &answer)
 	if err != nil {
-		return PromptResponse{}, errors.Wrap(err, "prompt error")
+		return PromptResponse{}, fmt.Errorf("prompt error: %w", err)
 	}
 	return p.SetStringResponse(answer), nil
 }
