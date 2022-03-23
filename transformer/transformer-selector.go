@@ -8,6 +8,8 @@ func newTransformer(spec transformationSpec) Transformer {
 		return newIncludeTransformer(spec)
 	case TransformationTypeReplace:
 		return newTextReplacer(spec)
+	case TransformationTypeRename:
+		return newFileRenamer(spec)
 	default:
 		panic(fmt.Sprintf("Unknown transformation type: %s ", spec.Type))
 	}
