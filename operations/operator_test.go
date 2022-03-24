@@ -9,7 +9,7 @@ import (
 func TestNewOperator(t *testing.T) {
 	assert := assert.New(t)
 
-	o := NewOperator(OperationSpec{Sh: []string{"hello"}})
+	o := NewOperator(OperationSpec{Sh: []shellOperationSpec{{Cmd: "hello"}}})
 	assert.NotNil(o)
 	assert.IsType(&shellOperation{}, o)
 }
