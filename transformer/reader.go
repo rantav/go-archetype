@@ -3,10 +3,10 @@ package transformer
 import (
 	"io/ioutil"
 
-	"github.com/rantav/go-archetype/log"
 	"gopkg.in/yaml.v2"
 
 	"github.com/rantav/go-archetype/inputs"
+	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/operations"
 	"github.com/rantav/go-archetype/types"
 )
