@@ -19,14 +19,17 @@ type includeTransformer struct {
 	files        []types.FilePattern
 	// Does this condition evaluate to true, provided the variable values?
 	truthy bool
+
+	logger log.Logger
 }
 
-func newIncludeTransformer(spec transformationSpec) *includeTransformer {
+func newIncludeTransformer(spec transformationSpec, logger log.Logger) *includeTransformer {
 	return &includeTransformer{
 		name:         spec.Name,
 		condition:    spec.Condition,
 		regionMarker: spec.RegionMarker,
 		files:        types.NewFilePatterns(spec.Files),
+		logger:       logger,
 	}
 }
 
@@ -75,12 +78,12 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 		}
 	}
 	if scanner.Err() != nil {
-		log.Errorf("Error while scanning file %s: %+v.\n\n Contents: %s ...",
+		t.logger.Errorf("Error while scanning file %s: %+v.\n\n Contents: %s ...",
 			scanner.Err(), input.FullPath, input.Contents[:100])
 	}
 
 	newContents := output.String()
-	// Check if a the last newline should be preserved or discarded.
+	// Check if the last newline should be preserved or discarded.
 	if len(newContents) > 0 && !t.hasEmptyLineAtTheEnd(input.Contents) {
 		newContents = newContents[:len(newContents)-1]
 	}

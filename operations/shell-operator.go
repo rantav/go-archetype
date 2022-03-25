@@ -12,11 +12,15 @@ import (
 )
 
 type shellOperation struct {
-	sh []string
+	sh     []string
+	logger log.Logger
 }
 
-func newShellOperator(spec OperationSpec) *shellOperation {
-	return &shellOperation{sh: spec.Sh}
+func newShellOperator(spec OperationSpec, logger log.Logger) *shellOperation {
+	return &shellOperation{
+		sh:     spec.Sh,
+		logger: logger,
+	}
 }
 
 func (o *shellOperation) Operate() error {
@@ -24,7 +28,7 @@ func (o *shellOperation) Operate() error {
 		scanner := bufio.NewScanner(strings.NewReader(command))
 		for scanner.Scan() {
 			line := scanner.Text()
-			if err := executeShell(line); err != nil {
+			if err := o.executeShell(line); err != nil {
 				return err
 			}
 		}
@@ -44,17 +48,17 @@ func (o *shellOperation) Template(vars map[string]string) error {
 	return nil
 }
 
-func executeShell(shellLine string) error {
+func (o *shellOperation) executeShell(shellLine string) error {
 	cmd := exec.Command("sh", "-c", shellLine)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
-	log.Infof("Running command: %s", shellLine)
+	o.logger.Infof("Running command: %s", shellLine)
 	err := cmd.Run()
 	if err != nil {
-		log.Errorf("Error running command.\n\t STDOUT: %s \n\n\t STDERR: %s", stdout.String(), stderr.String())
+		o.logger.Errorf("Error running command.\n\t STDOUT: %s \n\n\t STDERR: %s", stdout.String(), stderr.String())
 		return fmt.Errorf("error running command %s: %w", shellLine, err)
 	}
-	log.Infof("Output: %s", stdout.String())
+	o.logger.Infof("Output: %s", stdout.String())
 	return nil
 }

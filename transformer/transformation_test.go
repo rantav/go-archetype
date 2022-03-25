@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/rantav/go-archetype/inputs"
+	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -28,6 +29,7 @@ func TestTransformationsTransform(t *testing.T) {
 				Replacement: "y",
 				Files:       []string{"*.go"},
 			})},
+		logger: log.NopLogger{},
 	}
 	file, err = ts.Transform(types.File{
 		Contents:     "x",
@@ -62,6 +64,7 @@ func TestTransformationsTemplate(t *testing.T) {
 		prompters: []inputs.Prompter{
 			inputs.NewPrompt(inputs.InputSpec{Type: "text"}),
 		},
+		logger: log.NopLogger{},
 	}
 	err := ts.Template(make(map[string]string))
 	require.NoError(t, err)
@@ -69,12 +72,15 @@ func TestTransformationsTemplate(t *testing.T) {
 
 func TestTransformationsMatched(t *testing.T) {
 	assert := assert.New(t)
-	assert.True(matched("hello.go", []types.FilePattern{{Pattern: "hello.go"}}, false))
-	assert.True(matched("all/hello.go", []types.FilePattern{{Pattern: "all/"}}, true))
+
+	tr := Transformations{logger: log.NopLogger{}}
+
+	assert.True(tr.matched("hello.go", []types.FilePattern{{Pattern: "hello.go"}}, false))
+	assert.True(tr.matched("all/hello.go", []types.FilePattern{{Pattern: "all/"}}, true))
 
 	// Test some globs
-	assert.True(matched("hello.go", []types.FilePattern{{Pattern: "*.go"}}, false))
-	assert.True(matched("x/hello.go", []types.FilePattern{{Pattern: "*/*.go"}}, false))
-	assert.False(matched("x/hello.go", []types.FilePattern{{Pattern: "*.go"}}, false))
-	assert.True(matched("x/y/hello.go", []types.FilePattern{{Pattern: "**/*.go"}}, false))
+	assert.True(tr.matched("hello.go", []types.FilePattern{{Pattern: "*.go"}}, false))
+	assert.True(tr.matched("x/hello.go", []types.FilePattern{{Pattern: "*/*.go"}}, false))
+	assert.False(tr.matched("x/hello.go", []types.FilePattern{{Pattern: "*.go"}}, false))
+	assert.True(tr.matched("x/y/hello.go", []types.FilePattern{{Pattern: "**/*.go"}}, false))
 }

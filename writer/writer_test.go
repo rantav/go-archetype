@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,7 +23,7 @@ func TestWriteFileNoDiscard(t *testing.T) {
 		Discarded:    false,
 	}
 	mode := os.ModePerm
-	err := WriteFile(destinationBase, file, mode)
+	err := WriteFile(destinationBase, file, mode, log.NopLogger{})
 	require.NoError(t, err)
 
 	target := destinationBase + "file.txt"
@@ -45,7 +46,7 @@ func TestWriteFileDiscard(t *testing.T) {
 		Discarded:    true,
 	}
 	mode := os.ModePerm
-	err := WriteFile(destinationBase, file, mode)
+	err := WriteFile(destinationBase, file, mode, log.NopLogger{})
 	require.NoError(t, err)
 
 	target := destinationBase + "discarded"

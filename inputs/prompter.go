@@ -13,7 +13,7 @@ type PromptResponse struct {
 type Prompter interface {
 	GetID() string
 	Prompt() (PromptResponse, error)
-	SetStringResponse(string) PromptResponse
+	SetStringResponse(string) (PromptResponse, error)
 }
 
 // Create a new prompt based on spec.Type

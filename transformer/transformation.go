@@ -25,27 +25,27 @@ type Transformations struct {
 	// Before and after operators
 	before []operations.Operator
 	after  []operations.Operator
+
+	logger log.Logger
 }
 
-func (t Transformations) Transform(file types.File) (
-	newFile types.File, err error,
-) {
+func (t Transformations) Transform(file types.File) (newFile types.File, err error) {
 	for _, transformer := range t.transformers {
 		// See if file already needs to be discarded
 		if file.Discarded {
 			return file, nil
 		}
-		if !matched(file.RelativePath, transformer.GetFilePatterns(), false) {
+		if !t.matched(file.RelativePath, transformer.GetFilePatterns(), false) {
 			continue
 		}
-		log.Debugf("Applying transformer [%s] to file [%s]", transformer.GetName(), file.RelativePath)
+		t.logger.Debugf("Applying transformer [%s] to file [%s]", transformer.GetName(), file.RelativePath)
 		file = transformer.Transform(file)
 	}
 	return file, nil
 }
 
 func (t Transformations) IsGloballyIgnored(path string) bool {
-	return matched(path, t.ignore, true)
+	return t.matched(path, t.ignore, true)
 }
 
 func (t Transformations) GetInputPrompters() []inputs.Prompter {
@@ -84,12 +84,12 @@ func (t *Transformations) Template(vars map[string]string) error {
 	return nil
 }
 
-func matched(path string, patterns []types.FilePattern, includePrefix bool) bool {
+func (t *Transformations) matched(path string, patterns []types.FilePattern, includePrefix bool) bool {
 	for _, pattern := range patterns {
 		// Check glob match
 		matched, err := pattern.Match(path)
 		if err != nil {
-			log.Errorf("Error matching pattern %s to file %s. %+v \n", pattern.Pattern, path, err)
+			t.logger.Errorf("Error matching pattern %s to file %s. %+v \n", pattern.Pattern, path, err)
 		}
 		if matched {
 			return true

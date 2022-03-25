@@ -3,6 +3,7 @@ package operations
 import (
 	"testing"
 
+	"github.com/rantav/go-archetype/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -10,7 +11,7 @@ import (
 func TestNewShellOperator(t *testing.T) {
 	assert := assert.New(t)
 
-	o := newShellOperator(OperationSpec{Sh: []string{"hello"}})
+	o := newShellOperator(OperationSpec{Sh: []string{"hello"}}, log.NopLogger{})
 	assert.NotNil(o)
 	assert.IsType(&shellOperation{}, o)
 }
@@ -18,7 +19,7 @@ func TestNewShellOperator(t *testing.T) {
 func TestShellOperatorTemplate(t *testing.T) {
 	assert := assert.New(t)
 
-	o := newShellOperator(OperationSpec{Sh: []string{"hello {{.source}}"}})
+	o := newShellOperator(OperationSpec{Sh: []string{"hello {{.source}}"}}, log.NopLogger{})
 	require.NotNil(t, o)
 	vars := map[string]string{
 		"source": "world",
@@ -30,35 +31,35 @@ func TestShellOperatorTemplate(t *testing.T) {
 }
 
 func TestShellOperatorOperate(t *testing.T) {
-	o := newShellOperator(OperationSpec{Sh: []string{"echo hello"}})
+	o := newShellOperator(OperationSpec{Sh: []string{"echo hello"}}, log.NopLogger{})
 	require.NotNil(t, o)
 	err := o.Operate()
 	require.NoError(t, err)
 }
 
 func TestShellOperatorOperateMultiline(t *testing.T) {
-	o := newShellOperator(OperationSpec{Sh: []string{"echo hello\necho world"}})
+	o := newShellOperator(OperationSpec{Sh: []string{"echo hello\necho world"}}, log.NopLogger{})
 	require.NotNil(t, o)
 	err := o.Operate()
 	require.NoError(t, err)
 }
 
 func TestShellOperatorOperateAndFail(t *testing.T) {
-	o := newShellOperator(OperationSpec{Sh: []string{"no-such-command really"}})
+	o := newShellOperator(OperationSpec{Sh: []string{"no-such-command really"}}, log.NopLogger{})
 	require.NotNil(t, o)
 	err := o.Operate()
 	require.Error(t, err)
 }
 
 func TestShellOperatorOperateMultilineFail(t *testing.T) {
-	o := newShellOperator(OperationSpec{Sh: []string{"no-such-command at all\necho well"}})
+	o := newShellOperator(OperationSpec{Sh: []string{"no-such-command at all\necho well"}}, log.NopLogger{})
 	require.NotNil(t, o)
 	err := o.Operate()
 	require.Error(t, err)
 }
 
 func TestShellOperatorOperateMultilineFail2(t *testing.T) {
-	o := newShellOperator(OperationSpec{Sh: []string{"echo ok\nno-such-command at all"}})
+	o := newShellOperator(OperationSpec{Sh: []string{"echo ok\nno-such-command at all"}}, log.NopLogger{})
 	require.NotNil(t, o)
 	err := o.Operate()
 	require.Error(t, err)

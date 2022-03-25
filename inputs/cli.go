@@ -18,7 +18,10 @@ func ParseCLIArgsInputs(collector inputsCollector, args []string) error {
 	for i, input := range prompters {
 		provided := providedCLIArgs[i]
 		if provided != nil {
-			response := input.SetStringResponse(*provided)
+			response, setErr := input.SetStringResponse(*provided)
+			if setErr != nil {
+				return setErr
+			}
 			collector.SetResponse(response)
 		}
 	}
