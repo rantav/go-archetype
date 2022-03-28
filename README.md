@@ -384,13 +384,38 @@ transformations:
 
 ## Before and After
 
-The `before` and `after` hooks allos you to run arbitrary shell command just before running all transformations or just after then.
+The `before` and `after` hooks allow you to run arbitrary shell command just before running all transformations or just after then.
 
 They are provided with useful context that can be used in the actual command, which includes:
 
 * `source` (Used as `{{ .source }}`)
 * `destination` (Used as `{{ .destination }}`)
 * As well as all user inputs
+
+Example:
+
+```yaml
+after:
+  operations:
+    - sh:
+      # You can define commands with the basic syntax.
+      # If so, each command will be separated by the <newline> symbol. Each line will be executed
+      # separately.
+      - cd {{.destination}} && echo $PWD
+      # Either, you can use the extended syntax.
+      # cmd defines command line to be executed.
+      - cmd: echo Done archetyping from {{ .source }} to {{ .destination }} of project {{ .ProjectName }}
+        # if multiline is set to false, then it runs exactly as basic syntax command
+        multiline: false
+      # Or, you can set multiline to true. Then, the command will be executed as-is.
+      # To make this happen, use YAML multiline operator "|".
+      # See also: https://yaml-multiline.info/
+      - cmd: |
+          if [ 1 == 1 ]; then
+            echo "OK!"
+          fi
+        multiline: true
+```
 
 ## Operations and debugging
 

@@ -12,21 +12,53 @@ import (
 )
 
 type shellOperation struct {
-	sh []string
+	sh []shellCmdOperation
+}
+
+type shellCmdOperation struct {
+	cmd       string
+	multiline bool
 }
 
 func newShellOperator(spec OperationSpec) *shellOperation {
-	return &shellOperation{sh: spec.Sh}
+	operations := make([]shellCmdOperation, len(spec.Sh))
+	for i := range spec.Sh {
+		operations[i] = shellCmdOperation{
+			cmd:       spec.Sh[i].Cmd,
+			multiline: spec.Sh[i].Multiline,
+		}
+	}
+	return &shellOperation{sh: operations}
 }
 
 func (o *shellOperation) Operate() error {
 	for _, command := range o.sh {
-		scanner := bufio.NewScanner(strings.NewReader(command))
-		for scanner.Scan() {
-			line := scanner.Text()
-			if err := executeShell(line); err != nil {
-				return err
-			}
+		if err := invokeCmdOperation(command); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func invokeCmdOperation(command shellCmdOperation) error {
+	switch command.multiline {
+	case true:
+		return invokeMultilineCmd(command.cmd)
+	default:
+		return splitLinesAndExecute(command.cmd)
+	}
+}
+
+func invokeMultilineCmd(cmd string) error {
+	return executeShell(strings.TrimSpace(cmd))
+}
+
+func splitLinesAndExecute(cmd string) error {
+	scanner := bufio.NewScanner(strings.NewReader(cmd))
+	for scanner.Scan() {
+		line := scanner.Text()
+		if err := executeShell(line); err != nil {
+			return err
 		}
 	}
 	return nil
@@ -36,7 +68,7 @@ func (o *shellOperation) Operate() error {
 func (o *shellOperation) Template(vars map[string]string) error {
 	var err error
 	for i := range o.sh {
-		o.sh[i], err = template.Execute(o.sh[i], vars)
+		o.sh[i].cmd, err = template.Execute(o.sh[i].cmd, vars)
 		if err != nil {
 			return err
 		}

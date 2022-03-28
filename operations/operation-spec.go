@@ -4,7 +4,27 @@ type Spec struct {
 	Operations []OperationSpec `yaml:"operations"`
 }
 type OperationSpec struct {
-	Sh []string `yaml:"sh"`
+	Sh []shellOperationSpec `yaml:"sh"`
+}
+
+type shellOperationSpec struct {
+	Cmd       string `yaml:"cmd"`
+	Multiline bool   `yaml:"multiline"`
+}
+
+func (s *shellOperationSpec) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var cmd string
+	if err := unmarshal(&cmd); err == nil {
+		s.Cmd = cmd
+		return nil
+	}
+
+	type rawShellOperation shellOperationSpec
+	if err := unmarshal((*rawShellOperation)(s)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func FromSpec(specs Spec) []Operator {
