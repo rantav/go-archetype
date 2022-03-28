@@ -6,11 +6,12 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/rantav/go-archetype/inputs"
+	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/operations"
 	"github.com/rantav/go-archetype/types"
 )
 
-func Read(transformationsFile string) (*Transformations, error) {
+func Read(transformationsFile string, logger log.Logger) (*Transformations, error) {
 	yamlFile, err := ioutil.ReadFile(transformationsFile)
 	if err != nil {
 		return nil, err
@@ -20,24 +21,26 @@ func Read(transformationsFile string) (*Transformations, error) {
 	if err != nil {
 		return nil, err
 	}
-	return FromSpec(spec)
+	return FromSpec(spec, logger)
 }
 
-func FromSpec(spec transformationsSpec) (*Transformations, error) {
+func FromSpec(spec transformationsSpec, logger log.Logger) (*Transformations, error) {
 	return &Transformations{
 		ignore:       types.NewFilePatterns(spec.Ignore),
-		transformers: transformersFromSpec(spec.Transformations),
+		transformers: transformersFromSpec(spec.Transformations, logger),
 		prompters:    inputs.FromSpec(spec.Inputs),
 		userInputs:   make(map[string]inputs.PromptResponse),
-		before:       operations.FromSpec(spec.Before),
-		after:        operations.FromSpec(spec.After),
+		before:       operations.FromSpec(spec.Before, logger),
+		after:        operations.FromSpec(spec.After, logger),
+
+		logger: logger,
 	}, nil
 }
 
-func transformersFromSpec(transformationSpecs []transformationSpec) []Transformer {
+func transformersFromSpec(transformationSpecs []transformationSpec, logger log.Logger) []Transformer {
 	var transformers []Transformer
 	for _, t := range transformationSpecs {
-		transformers = append(transformers, newTransformer(t))
+		transformers = append(transformers, newTransformer(t, logger))
 	}
 	return transformers
 }

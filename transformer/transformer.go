@@ -21,13 +21,13 @@ type Transformer interface {
 	Transform(types.File) types.File
 }
 
-func Transform(source, destination string, transformations Transformations) error {
+func Transform(source, destination string, transformations Transformations, logger log.Logger) error {
 	empty, err := isDirEmptyOrDoesntExist(destination)
 	if err != nil {
 		return err
 	}
 	if !empty {
-		log.Errorf("Destination %s is not empty, aborting", destination)
+		logger.Errorf("Destination %s is not empty, aborting", destination)
 		return errors.New("destination is not empty")
 	}
 
@@ -52,10 +52,10 @@ func Transform(source, destination string, transformations Transformations) erro
 		}
 
 		if ignored {
-			log.Debugf("Ignoring file %s", path)
+			logger.Debugf("Ignoring file %s", path)
 		} else {
 			file, err = transformations.Transform(file)
-			if writeErr := writer.WriteFile(destination, file, info.Mode()); writeErr != nil {
+			if writeErr := writer.WriteFile(destination, file, info.Mode(), logger); writeErr != nil {
 				return writeErr
 			}
 		}

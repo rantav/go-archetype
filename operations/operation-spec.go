@@ -1,5 +1,9 @@
 package operations
 
+import (
+	"github.com/rantav/go-archetype/log"
+)
+
 type Spec struct {
 	Operations []OperationSpec `yaml:"operations"`
 }
@@ -27,10 +31,10 @@ func (s *shellOperationSpec) UnmarshalYAML(unmarshal func(interface{}) error) er
 	return nil
 }
 
-func FromSpec(specs Spec) []Operator {
+func FromSpec(specs Spec, logger log.Logger) []Operator {
 	var operators []Operator
 	for _, s := range specs.Operations {
-		op := NewOperator(s)
+		op := NewOperator(s, logger)
 		operators = append(operators, op)
 	}
 	return operators

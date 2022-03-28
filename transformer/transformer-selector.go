@@ -1,16 +1,20 @@
 package transformer
 
-import "fmt"
+import (
+	"fmt"
 
-func newTransformer(spec transformationSpec) Transformer {
+	"github.com/rantav/go-archetype/log"
+)
+
+func newTransformer(spec transformationSpec, logger log.Logger) Transformer {
 	switch spec.Type {
 	case TransformationTypeInclude:
-		return newIncludeTransformer(spec)
+		return newIncludeTransformer(spec, logger)
 	case TransformationTypeReplace:
 		return newTextReplacer(spec)
 	case TransformationTypeRename:
 		return newFileRenamer(spec)
 	default:
-		panic(fmt.Sprintf("Unknown transformation type: %s ", spec.Type))
+		panic(fmt.Sprintf("Unknown transformation type: %s", spec.Type))
 	}
 }

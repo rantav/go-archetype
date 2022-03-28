@@ -12,7 +12,8 @@ import (
 )
 
 type shellOperation struct {
-	sh []shellCmdOperation
+	sh     []shellCmdOperation
+	logger log.Logger
 }
 
 type shellCmdOperation struct {
@@ -20,7 +21,7 @@ type shellCmdOperation struct {
 	multiline bool
 }
 
-func newShellOperator(spec OperationSpec) *shellOperation {
+func newShellOperator(spec OperationSpec, logger log.Logger) *shellOperation {
 	operations := make([]shellCmdOperation, len(spec.Sh))
 	for i := range spec.Sh {
 		operations[i] = shellCmdOperation{
@@ -28,36 +29,39 @@ func newShellOperator(spec OperationSpec) *shellOperation {
 			multiline: spec.Sh[i].Multiline,
 		}
 	}
-	return &shellOperation{sh: operations}
+	return &shellOperation{
+		sh:     operations,
+		logger: logger,
+	}
 }
 
 func (o *shellOperation) Operate() error {
 	for _, command := range o.sh {
-		if err := invokeCmdOperation(command); err != nil {
+		if err := o.invokeCmdOperation(command); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func invokeCmdOperation(command shellCmdOperation) error {
+func (o *shellOperation) invokeCmdOperation(command shellCmdOperation) error {
 	switch command.multiline {
 	case true:
-		return invokeMultilineCmd(command.cmd)
+		return o.invokeMultilineCmd(command.cmd)
 	default:
-		return splitLinesAndExecute(command.cmd)
+		return o.splitLinesAndExecute(command.cmd)
 	}
 }
 
-func invokeMultilineCmd(cmd string) error {
-	return executeShell(strings.TrimSpace(cmd))
+func (o *shellOperation) invokeMultilineCmd(cmd string) error {
+	return o.executeShell(strings.TrimSpace(cmd))
 }
 
-func splitLinesAndExecute(cmd string) error {
+func (o *shellOperation) splitLinesAndExecute(cmd string) error {
 	scanner := bufio.NewScanner(strings.NewReader(cmd))
 	for scanner.Scan() {
 		line := scanner.Text()
-		if err := executeShell(line); err != nil {
+		if err := o.executeShell(line); err != nil {
 			return err
 		}
 	}
@@ -76,17 +80,17 @@ func (o *shellOperation) Template(vars map[string]string) error {
 	return nil
 }
 
-func executeShell(shellLine string) error {
+func (o *shellOperation) executeShell(shellLine string) error {
 	cmd := exec.Command("sh", "-c", shellLine)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
-	log.Infof("Running command: %s", shellLine)
+	o.logger.Infof("Running command: %s", shellLine)
 	err := cmd.Run()
 	if err != nil {
-		log.Errorf("Error running command.\n\t STDOUT: %s \n\n\t STDERR: %s", stdout.String(), stderr.String())
+		o.logger.Errorf("Error running command.\n\t STDOUT: %s \n\n\t STDERR: %s", stdout.String(), stderr.String())
 		return fmt.Errorf("error running command %s: %w", shellLine, err)
 	}
-	log.Infof("Output: %s", stdout.String())
+	o.logger.Infof("Output: %s", stdout.String())
 	return nil
 }

@@ -3,8 +3,10 @@ package transformer
 import (
 	"testing"
 
-	"github.com/rantav/go-archetype/types"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/rantav/go-archetype/log"
+	"github.com/rantav/go-archetype/types"
 )
 
 func TestTransform(t *testing.T) {
@@ -121,7 +123,7 @@ func TestIncludeTransformerBasics(t *testing.T) {
 
 	r := newIncludeTransformer(transformationSpec{
 		Name: "1",
-	})
+	}, log.NopLogger{})
 	assert.Equal("1", r.GetName())
 	assert.Empty(r.GetFilePatterns())
 }

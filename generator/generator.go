@@ -4,16 +4,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
-
 	"github.com/rantav/go-archetype/inputs"
 	"github.com/rantav/go-archetype/log"
 	"github.com/rantav/go-archetype/transformer"
 )
 
 // Generate is the main entry point for code generation/transformations.
-func Generate(transformationsFile, source, destination string, inputArgs []string) error {
-	transformations, err := transformer.Read(transformationsFile)
+func Generate(transformationsFile, source, destination string, inputArgs []string, logger log.Logger) error {
+	transformations, err := transformer.Read(transformationsFile, logger)
 	if err != nil {
 		return err
 	}
@@ -34,8 +32,7 @@ func Generate(transformationsFile, source, destination string, inputArgs []strin
 		return err
 	}
 
-	log.Debugf(spew.Sdump(transformations))
-	err = transformer.Transform(source, destination, *transformations)
+	err = transformer.Transform(source, destination, *transformations, logger)
 	if err != nil {
 		return err
 	}

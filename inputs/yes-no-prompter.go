@@ -2,7 +2,6 @@ package inputs
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
@@ -42,18 +41,18 @@ func (p *yesNoPrompter) Prompt() (PromptResponse, error) {
 	} else {
 		answer = falseS
 	}
-	return p.SetStringResponse(answer), nil
+	return p.SetStringResponse(answer)
 }
 
 func (p *yesNoPrompter) GetID() string {
 	return p.ID
 }
 
-func (p *yesNoPrompter) SetStringResponse(answer string) PromptResponse {
+func (p *yesNoPrompter) SetStringResponse(answer string) (PromptResponse, error) {
 	answer = p.beNiceAndTryToConvert(answer)
 	b, err := strconv.ParseBool(answer)
 	if err != nil {
-		log.Fatalf("Unknown input to yes/no boolean input (use true/false): %s", err)
+		return PromptResponse{}, fmt.Errorf("unknown input to yes/no boolean input (use true/false): %w", err)
 	}
 	if b {
 		p.Answer = trueS
@@ -61,7 +60,7 @@ func (p *yesNoPrompter) SetStringResponse(answer string) PromptResponse {
 		p.Answer = "" // This evaluates to false by go tempalates
 	}
 	p.Answered = true
-	return p.PromptResponse
+	return p.PromptResponse, nil
 }
 
 // Tries to find a suitable conversion b/w the input string and a true/false value.

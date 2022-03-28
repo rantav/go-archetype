@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
+
+	"github.com/rantav/go-archetype/log"
 )
 
 func TestFromSpec(t *testing.T) {
@@ -26,10 +28,11 @@ func TestFromSpec(t *testing.T) {
 						multiline: false,
 					},
 				},
+				logger: log.NopLogger{},
 			},
 		}
 
-		actual := FromSpec(spec)
+		actual := FromSpec(spec, log.NopLogger{})
 
 		assert.Equal(t, expected, actual)
 	})

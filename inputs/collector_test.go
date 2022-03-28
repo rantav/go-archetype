@@ -33,17 +33,17 @@ func (p *mockPrompter) GetID() string {
 }
 
 func (p *mockPrompter) Prompt() (PromptResponse, error) {
-	return p.SetStringResponse(p.Answer), nil
+	return p.SetStringResponse(p.Answer)
 }
 
-func (p *mockPrompter) SetStringResponse(response string) PromptResponse {
+func (p *mockPrompter) SetStringResponse(response string) (PromptResponse, error) {
 	return PromptResponse{
 		InputSpec: InputSpec{
 			ID: p.ID,
 		},
 		Answer:   response,
 		Answered: true,
-	}
+	}, nil
 }
 
 type mockInputsCollector struct {

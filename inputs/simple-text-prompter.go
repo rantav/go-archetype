@@ -26,17 +26,17 @@ func (p *simpleTextPrompter) Prompt() (PromptResponse, error) {
 	if err != nil {
 		return PromptResponse{}, fmt.Errorf("prompt error: %w", err)
 	}
-	return p.SetStringResponse(answer), nil
+	return p.SetStringResponse(answer)
 }
 
 func (p *simpleTextPrompter) GetID() string {
 	return p.ID
 }
 
-func (p *simpleTextPrompter) SetStringResponse(answer string) PromptResponse {
+func (p *simpleTextPrompter) SetStringResponse(answer string) (PromptResponse, error) {
 	p.Answer = answer
 	p.Answered = true
-	return p.PromptResponse
+	return p.PromptResponse, nil
 }
 
 var _ Prompter = &simpleTextPrompter{}
