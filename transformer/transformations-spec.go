@@ -8,6 +8,7 @@ import (
 const (
 	TransformationTypeInclude = "include"
 	TransformationTypeReplace = "replace"
+	TransformationTypeRename  = "rename"
 )
 
 type transformationsSpec struct {

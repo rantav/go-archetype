@@ -224,7 +224,7 @@ To summarize, in cases where you'd like to include or exlude just parts of files
 
 ### The *replace* transformer
 
-This transformer performs a search and replace functionality. For example you might ask the user for the project anme and then replace the generic tempalte project name with the user's provided name
+This transformer performs a search and replace functionality. For example, you might ask the user for the project name and then replace the generic template project name with the user's provided name
 
 Example:
 
@@ -240,6 +240,52 @@ transformations:
     pattern: go-template # The text pattern to search and replace
     replacement: "{{ .name }}" # The text to replace. You may use go tempalates and perform arbitrary replacements.
     files: ["*.go", "**/*.go", "**/*.sh", ".gitignore", "README.md"]
+```
+
+### The *rename* transformer
+
+This transformer renames files. For example, you might want to rename all the files with the pattern `<go-template>` with the user's provided project name.
+
+Example:
+
+Let's imagine, you have a project template with the following structure:
+
+```
+go-template
+├── cmd
+│  └── go-template
+│     ├── go-template.go
+│     └── main.go
+├── Dockerfile
+└── README.md
+```
+
+And the following `transformations.yml` file:
+
+```yml
+inputs:
+  - id: name
+    text: What is the project name? (e.g. my-awesome-go-project)
+    type: text
+
+transformations:
+  - name: rename files to the project name
+    type: rename # The type of the transformer is **rename**
+    pattern: go-template # The text pattern to search and replace
+    replacement: "{{ .name }}" # The text to replace. You may use go tempalates and perform arbitrary replacements.
+    files: ["**"]
+```
+
+Then, after transformations you will get a new project with the renamed files like these:
+
+```
+my-awesome-go-project
+├── cmd
+│  └── my-awesome-go-project
+│     ├── my-awesome-go-project.go
+│     └── main.go
+├── Dockerfile
+└── README.md
 ```
 
 ### Recepies
@@ -338,13 +384,38 @@ transformations:
 
 ## Before and After
 
-The `before` and `after` hooks allos you to run arbitrary shell command just before running all transformations or just after then.
+The `before` and `after` hooks allow you to run arbitrary shell command just before running all transformations or just after then.
 
 They are provided with useful context that can be used in the actual command, which includes:
 
 * `source` (Used as `{{ .source }}`)
 * `destination` (Used as `{{ .destination }}`)
 * As well as all user inputs
+
+Example:
+
+```yaml
+after:
+  operations:
+    - sh:
+      # You can define commands with the basic syntax.
+      # If so, each command will be separated by the <newline> symbol. Each line will be executed
+      # separately.
+      - cd {{.destination}} && echo $PWD
+      # Either, you can use the extended syntax.
+      # cmd defines command line to be executed.
+      - cmd: echo Done archetyping from {{ .source }} to {{ .destination }} of project {{ .ProjectName }}
+        # if multiline is set to false, then it runs exactly as basic syntax command
+        multiline: false
+      # Or, you can set multiline to true. Then, the command will be executed as-is.
+      # To make this happen, use YAML multiline operator "|".
+      # See also: https://yaml-multiline.info/
+      - cmd: |
+          if [ 1 == 1 ]; then
+            echo "OK!"
+          fi
+        multiline: true
+```
 
 ## Operations and debugging
 
