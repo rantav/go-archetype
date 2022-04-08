@@ -1,3 +1,5 @@
+[//]: # ({% raw %})
+
 # go-archetype
 
 [![Actions Status](https://github.com/rantav/go-archetype/workflows/Go/badge.svg)](https://github.com/rantav/go-archetype/actions)
@@ -420,3 +422,5 @@ after:
 ## Operations and debugging
 
 The view detailed logs, run with `LOG_LEVEL=debug`
+
+[//]: # ({% endraw %})
