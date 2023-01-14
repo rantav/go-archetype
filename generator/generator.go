@@ -2,6 +2,7 @@ package generator
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/rantav/go-archetype/inputs"
@@ -49,5 +50,7 @@ func collectSystemAndEnvironmentVariables(source, destination string) map[string
 	}
 	vars["source"] = source
 	vars["destination"] = destination
+	vars["source_dir"] = filepath.Base(source)
+	vars["destination_dir"] = filepath.Base(destination)
 	return vars
 }
