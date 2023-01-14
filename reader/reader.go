@@ -2,6 +2,7 @@ package reader
 
 import (
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -56,7 +57,9 @@ func isDirectory(fi os.FileInfo) (bool, error) {
 		return true, nil
 	case mode.IsRegular():
 		return false, nil
+	case mode&fs.ModeSymlink != 0:
+		return false, nil
 	default:
-		return false, fmt.Errorf("unknown file mode (dir or file) at %s", fi)
+		return false, fmt.Errorf("unknown file mode (dir, file, or symlink) at %s", fi)
 	}
 }
