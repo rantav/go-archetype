@@ -57,7 +57,7 @@ func isDirectory(fi os.FileInfo) (bool, error) {
 		return true, nil
 	case mode.IsRegular():
 		return false, nil
-	case mode&fs.ModeSymlink != 0:
+	case (mode & fs.ModeSymlink) != 0:
 		return false, nil
 	default:
 		return false, fmt.Errorf("unknown file mode (dir, file, or symlink) at %s", fi)
