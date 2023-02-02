@@ -50,7 +50,7 @@ func collectSystemAndEnvironmentVariables(source, destination string) map[string
 	}
 	vars["source"] = source
 	vars["destination"] = destination
-	vars["source_dir"] = filepath.Base(source)
-	vars["destination_dir"] = filepath.Base(destination)
+	vars["source_dirname"] = filepath.Base(source)
+	vars["destination_dirname"] = filepath.Base(destination)
 	return vars
 }
