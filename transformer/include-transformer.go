@@ -3,6 +3,7 @@ package transformer
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/rantav/go-archetype/log"
@@ -56,14 +57,22 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 	// Locate begin and end lines of the markers
 	beginMarker := fmt.Sprintf("BEGIN %s", t.regionMarker)
 	endMarker := fmt.Sprintf("END %s", t.regionMarker)
-	scanner := bufio.NewScanner(strings.NewReader(input.Contents))
+	reader := bufio.NewReader(strings.NewReader(input.Contents))
 	var (
 		output      strings.Builder
 		insideBlock = false
 	)
-	for scanner.Scan() {
+	for {
+		line, err := read(reader)
+		if err != nil {
+			if err != io.EOF {
+				t.logger.Errorf("Error while scanning file %s: %+v.\n\n Contents: %s ...",
+					err, input.FullPath, input.Contents[:100])
+			}
+			break
+		}
 		includeLine := t.truthy || !insideBlock
-		text := scanner.Text()
+		text := string(line)
 		if strings.Contains(text, beginMarker) {
 			insideBlock = true
 			includeLine = false
@@ -76,10 +85,6 @@ func (t *includeTransformer) Transform(input types.File) types.File {
 			output.WriteString(text)
 			output.WriteRune('\n')
 		}
-	}
-	if scanner.Err() != nil {
-		t.logger.Errorf("Error while scanning file %s: %+v.\n\n Contents: %s ...",
-			scanner.Err(), input.FullPath, input.Contents[:100])
 	}
 
 	newContents := output.String()
@@ -104,6 +109,26 @@ func (t *includeTransformer) Template(vars map[string]string) error {
 func (t *includeTransformer) hasEmptyLineAtTheEnd(s string) bool {
 	l := len(s)
 	return l >= 1 && s[l-1] == '\n'
+}
+
+// read recursively reads a line into a []byte array,
+// supporting lines longer than an arbitrary buffer size
+// (which results in "token too long" errors)
+//
+// Credit: https://devmarkpro.com/working-big-files-golang#approach2
+func read(r *bufio.Reader) ([]byte, error) {
+	var (
+		isPrefix = true
+		err      error
+		line, ln []byte
+	)
+
+	for isPrefix && err == nil {
+		line, isPrefix, err = r.ReadLine()
+		ln = append(ln, line...)
+	}
+
+	return ln, err
 }
 
 var _ Transformer = &includeTransformer{}
