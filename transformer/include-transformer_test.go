@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"bufio"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,11 +17,16 @@ func TestTransform(t *testing.T) {
 		transformer := includeTransformer{
 			truthy:       truthy,
 			regionMarker: marker,
+			logger:       log.NopLogger{},
 		}
 		output := transformer.Transform(types.File{Contents: input})
 		assert.Equalf(expectedOutput, output.Contents, "Test failed, output not expected: %s", name)
 		assert.Equalf(expectedDiscarded, output.Discarded, "Test failed, discarded not expected: %s", name)
 	}
+
+	// make a string just a bit longer than the scanner max
+	repeatMe := "I will not waste chalk. "
+	excessivelyLongLine := strings.Repeat(repeatMe, 1+bufio.MaxScanTokenSize/len(repeatMe))
 
 	// nolint:maligned
 	tests := []struct {
@@ -102,6 +109,14 @@ END __1__
 `,
 			`1
 `,
+			false,
+		},
+		{
+			"excessively long line",
+			false,
+			"__1__",
+			excessivelyLongLine,
+			excessivelyLongLine,
 			false,
 		},
 	}
