@@ -9,6 +9,10 @@ inputs:
   - id: ProjectDescription
     text: Please provide a long project description
     type: text
+  - id: ExampleType
+    text: Select example type
+    type: select
+    options: [ "simple",  "medium", "advanced" ]
 before:
   operations:
     - sh:
@@ -39,6 +43,21 @@ transformations:
     pattern: go-archetype
     replacement: "{{ .ProjectName }}" # Reference to an input ID; go templates syntax
     files: ["*.go", "**/*.go"]
+  - name: simple
+    type: include
+    region_marker: __SIMPLE__
+    condition: eq .ExampleType "simple"
+    files: ["main.go"]
+  - name: simple
+    type: include
+    region_marker: __MEDIUM__
+    condition: eq .ExampleType "medium"
+    files: ["main.go"]
+  - name: advanced
+    type: include
+    region_marker: __ADVANCED__
+    condition: eq .ExampleType "advanced"
+    files: ["main.go"]
 after:
   operations:
     - sh:

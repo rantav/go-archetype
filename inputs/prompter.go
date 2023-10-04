@@ -23,6 +23,8 @@ func NewPrompt(spec InputSpec) Prompter {
 		return newSimpleTextPrompter(spec)
 	case "yesno":
 		return newYesNoPrompter(spec)
+	case "select":
+		return newSelectPrompter(spec)
 	default:
 		panic("Unknown user input type")
 	}

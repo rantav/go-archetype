@@ -32,7 +32,8 @@ test-template: cleanup-test-dir
 		-- \
 		--ProjectName my-go-project \
 		--IncludeReadme no \
-		--ProjectDescription "bla bla"
+		--ProjectDescription "bla bla" \
+		--ExampleType simple
 
 	cd $(TMP_DIR) &&\
 		make
