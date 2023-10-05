@@ -60,7 +60,7 @@ See the file transformations.yml in this very project as an example.
 
 It is common to request user inputs in order to apply a set of transformations. For example you might want to request for the project name, description, whether to include this or that functionality.
 
-There are two type of inputs: `text`, `yesno` and `select`. 
+There are following types of input: `text`, `yesno` and `select`. 
 - `text` provides simple, single-line text inputs. 
 - `yesno` originates a boolean [y/N] question.
 - `select` allows to select from a list of predefined options.
