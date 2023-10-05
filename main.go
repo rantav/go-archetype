@@ -8,17 +8,17 @@ import (
 // See the README.md file for specification
 // END __INCLUDE_README__
 
-// BEGIN __SIMPLE__
+// BEGIN __ProjectType_SIMPLE__
 // Simple section
-// END __SIMPLE__
+// END __ProjectType_SIMPLE__
 
-// BEGIN __MEDIUM__
+// BEGIN __ProjectType_MEDIUM__
 // Medium section
-// END __MEDIUM__
+// END __ProjectType_MEDIUM__
 
-// BEGIN __ADVANCED__
+// BEGIN __ProjectType_ADVANCED__
 // Advanced section
-// END __ADVANCED__
+// END __ProjectType_ADVANCED__
 
 func main() {
 	cmd.Execute()
