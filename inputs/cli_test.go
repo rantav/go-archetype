@@ -68,9 +68,6 @@ func TestParseSelectCLIArgsInputs(t *testing.T) {
 
 	err = ParseCLIArgsInputs(&mockInputsCollector{prompters: []Prompter{p}}, []string{"--s", "simple"})
 	require.NoError(t, err)
-
-	err = ParseCLIArgsInputs(&mockInputsCollector{prompters: []Prompter{p}}, []string{"--s", "simple"})
-	require.NoError(t, err)
 	assert.True(p.Answered)
 	assert.Equal("simple", p.Answer)
 }
