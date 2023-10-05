@@ -28,7 +28,7 @@ func TestTransform(t *testing.T) {
 	repeatMe := "I will not waste chalk. "
 	excessivelyLongLine := strings.Repeat(repeatMe, 1+bufio.MaxScanTokenSize/len(repeatMe))
 
-	// nolint:maligned
+	//nolint:maligned
 	tests := []struct {
 		name      string
 		truthy    bool
