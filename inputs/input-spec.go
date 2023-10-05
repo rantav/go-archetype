@@ -1,9 +1,10 @@
 package inputs
 
 type InputSpec struct {
-	ID   string `yaml:"id"`
-	Text string `yaml:"text"`
-	Type string `yaml:"type"`
+	ID      string   `yaml:"id"`
+	Text    string   `yaml:"text"`
+	Type    string   `yaml:"type"`
+	Options []string `yaml:"options,omitempty"`
 }
 
 func FromSpec(specs []InputSpec) []Prompter {

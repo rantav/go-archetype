@@ -60,7 +60,10 @@ See the file transformations.yml in this very project as an example.
 
 It is common to request user inputs in order to apply a set of transformations. For example you might want to request for the project name, description, whether to include this or that functionality.
 
-There are two type of inputs: `text` and `yesno`.  Text provide simple, single-line text inputs. While yesno provides for a boolean [y/N] question.
+There are following types of input: `text`, `yesno` and `select`. 
+- `text` provides simple, single-line text inputs. 
+- `yesno` originates a boolean [y/N] question.
+- `select` allows to select from a list of predefined options.
 
 Example:
 
@@ -72,6 +75,12 @@ inputs:
   - id: IncludeReadme
     text: Would you like to include the readme file?
     type: yesno
+  - id: ExampleType
+    text: Select example type
+    type: select
+    options:
+      - simple
+      - advanced    
 ```
 
 The `id` must be unique and is later also used for performing the transformations (see below).
@@ -91,11 +100,12 @@ go-archetype transform --transformations=transformations.yml \
     --source=. \
     --destination=.tmp/go/my-go-project \
     -- \
-    --ProjectName my-go-project
-    --IncludeReadme yes
+    --ProjectName my-go-project \
+    --IncludeReadme yes \
+    --ExampleType simple 
 ```
 
-In this example there are two inputs: `ProjectName` and `IncludeReadme`.
+In this example there are following inputs: `ProjectName`, `IncludeReadme` and `ExampleType`.
 
 To seperate program args from user input we use `--`. After the `--` the list of user inputs is provided.
 
@@ -360,6 +370,27 @@ replacement: "{{ .name | snakecase | camelcase | swapcase | title | swapcase }}"
 ```
 
 Yeah it works...
+
+#### Inclusion By Selection
+Select allows to select one of the options and include section depends on selected choice.
+
+```yml
+  - name: simple
+    type: include
+    region_marker: __SIMPLE__
+    condition: "eq .ExampleType \"simple\""
+    files: ["main.go"]
+  - name: medium
+    type: include
+    region_marker: __MEDIUM__
+    condition: "eq .ExampleType \"medium\""
+    files: ["main.go"]
+  - name: advanced
+    type: include
+    region_marker: __ADVANCED__
+    condition: "eq .ExampleType \"advanced\""
+    files: ["main.go"]
+```
 
 ## Order of execution
 
