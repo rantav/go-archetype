@@ -75,7 +75,7 @@ inputs:
   - id: IncludeReadme
     text: Would you like to include the readme file?
     type: yesno
-  - id: ExampleType
+  - id: ProjectType
     text: Select example type
     type: select
     options:
@@ -102,10 +102,10 @@ go-archetype transform --transformations=transformations.yml \
     -- \
     --ProjectName my-go-project \
     --IncludeReadme yes \
-    --ExampleType simple 
+    --ProjectType simple 
 ```
 
-In this example there are following inputs: `ProjectName`, `IncludeReadme` and `ExampleType`.
+In this example there are following inputs: `ProjectName`, `IncludeReadme` and `ProjectType`.
 
 To seperate program args from user input we use `--`. After the `--` the list of user inputs is provided.
 
@@ -377,18 +377,18 @@ Select allows to select one of the options and include section depends on select
 ```yml
   - name: simple
     type: include
-    region_marker: __SIMPLE__
-    condition: "eq .ExampleType \"simple\""
+    region_marker: __ProjectType_SIMPLE__
+    condition: "eq .ProjectType \"simple\""
     files: ["main.go"]
   - name: medium
     type: include
-    region_marker: __MEDIUM__
-    condition: "eq .ExampleType \"medium\""
+    region_marker: __ProjectType_MEDIUM__
+    condition: "eq .ProjectType \"medium\""
     files: ["main.go"]
   - name: advanced
     type: include
-    region_marker: __ADVANCED__
-    condition: "eq .ExampleType \"advanced\""
+    region_marker: __ProjectType_ADVANCED__
+    condition: "eq .ProjectType \"advanced\""
     files: ["main.go"]
 ```
 
