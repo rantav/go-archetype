@@ -76,7 +76,7 @@ inputs:
     text: Would you like to include the readme file?
     type: yesno
   - id: ProjectType
-    text: Select example type
+    text: Select project type
     type: select
     options:
       - simple
