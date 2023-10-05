@@ -10,7 +10,7 @@ inputs:
     text: Please provide a long project description
     type: text
   - id: ProjectType
-    text: Select example type
+    text: Select project type
     type: select
     options: [ "simple",  "medium", "advanced" ]
 before:
