@@ -2,6 +2,7 @@ package inputs
 
 import (
 	"fmt"
+
 	"github.com/AlecAivazis/survey/v2"
 )
 
