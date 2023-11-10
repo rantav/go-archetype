@@ -9,8 +9,8 @@ inputs:
   - id: ProjectDescription
     text: Please provide a long project description
     type: text
-  - id: ExampleType
-    text: Select example type
+  - id: ProjectType
+    text: Select project type
     type: select
     options: [ "simple",  "medium", "advanced" ]
 before:
@@ -45,18 +45,18 @@ transformations:
     files: ["*.go", "**/*.go"]
   - name: simple
     type: include
-    region_marker: __SIMPLE__
-    condition: eq .ExampleType "simple"
+    region_marker: __ProjectType_SIMPLE__ # Instantiates Simple project
+    condition: eq .ProjectType "simple"
     files: ["main.go"]
-  - name: simple
+  - name: medium 
     type: include
-    region_marker: __MEDIUM__
-    condition: eq .ExampleType "medium"
+    region_marker: __ProjectType_MEDIUM__ # Instantiates Medium project
+    condition: eq .ProjectType "medium"
     files: ["main.go"]
   - name: advanced
     type: include
-    region_marker: __ADVANCED__
-    condition: eq .ExampleType "advanced"
+    region_marker: __ProjectType_ADVANCED__ # Instantiates Advanced project
+    condition: eq .ProjectType "advanced"
     files: ["main.go"]
 after:
   operations:
